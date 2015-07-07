@@ -177,6 +177,17 @@
 	</style>
 	<script>
 		$(document).ready(function(){
+			if($(window).width()<645){
+					$("#main").css("max-width", 320);
+				}else if($(window).width()<969){
+					$("#main").css("max-width", 645);
+				}else if($(window).width()<1294){
+					$("#main").css("max-width", 969);
+				}else if($(window).width()<1620){
+					$("#main").css("max-width", 1294);
+				}else{
+					$("#main").css("max-width", 1620);
+			}
 			$(window).resize(function () {
 				if($(window).width()<645){
 					$("#main").css("max-width", 320);
