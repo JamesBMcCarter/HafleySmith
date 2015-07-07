@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <head>
 	<title>NCSU - Hafley & Smith Model</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,6 +50,7 @@
 		#loadDialog-Select{cursor:pointer;width:294px;-webkit-appearance:listbox;}
 		#saveDialog{min-height:0px !important;}
 		#owDialog{min-height:0px !important;}
+		#clearDialog{min-height:0px !important;}
 		#loadDialog{min-height:0px !important;}
 		#loadDialog-Manage{display:inline;position:absolute;right:3px;bottom:3px;}
 		
@@ -277,11 +278,11 @@
 			function collectThinnings() {
 				var thinningsArray = document.getElementById("selectList").options;
 				for(i=0;i<thinningsArray.length;i++){
-					thinningsString = thinningsString + thinningsArray[i].text + "^";
+					thinningsString = thinningsString + "^" + thinningsArray[i].text;
 					
 				}
 				if (thinningsArray.length == 0){
-					thinningsString = "none,"
+					return "none";
 				}
 				return thinningsString;
 			}
@@ -315,7 +316,7 @@
 					+$("#outputVariable").text()+"^"
 					+checkTB($("#start").val())+"^"
 					+checkTB($("#end").val())+"^"
-					+checkTB($("#interval").val())+"^"
+					+checkTB($("#interval").val())
 					+collectThinnings()
 				return runOutput;
 			}
@@ -336,6 +337,7 @@
 				show: 'blind',
 				hide: 'blind',
 				width: 300,
+				dialogClass:'dialogTest',
 				autoOpen:false,
 			}); //end of Dialog initialization
 			
@@ -348,12 +350,7 @@
 				if(checkSaveName($("#saveName").val())===true){
 					owError($("#saveName").val());
 				}else{
-					document.cookie = $("#saveName").val() + "="+toStringOutput();
-					if(checkCookie("saves")==true){
-						document.cookie = "saves="+getCookie("saves")+$("#saveName").val()+","
-					}else{
-						document.cookie = "saves="+$("#saveName").val() + ",";
-					}
+					localStorage.setItem($("#saveName").val(), toStringOutput());
 					$("#saveName").val("");
 					$("#saveDialog").dialog("close");
 				}
@@ -377,14 +374,18 @@
 			}); //end of Dialog initialization
 			
 			$('#loadDialog-Cancel').click(function(){ //Cancel button function
-				resetLoadSelect();
-				$("#loadDialog").dialog("close");
+				if($('#loadDialog-Cancel').html()=="Cancel"){
+					resetLoadSelect();
+					$("#loadDialog").dialog("close");
+				}else{
+					$("#clearDialog").dialog("open");
+				}
 			});//end of Cancel button function
 			
 			$('#loadDialog-Load').click(function(){ //Load button function
 				if($("#loadDialog-Load").html()=="Load"){
 					reset();
-					var ca = getCookie($("#loadDialog-Select option:selected").text()).split("^");
+					var ca = getSave($("#loadDialog-Select option:selected").text()).split("^");
 					$("#icDropDown").val(ca[0]);
 					$('#tpaTB').val(ca[1]);
 					$("#ageTB").val(ca[2]);
@@ -415,9 +416,7 @@
 					resetLoadSelect();
 					$("#loadDialog").dialog("close");
 				}else{
-					document.cookie = $("#loadDialog-Select option:selected").text() + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-					var deleteSave = getCookie('saves').replace($("#loadDialog-Select option:selected").text()+",", "");
-					document.cookie = "saves="+deleteSave
+					localStorage.removeItem($("#loadDialog-Select option:selected").text());
 					$("#loadDialog-Select option:selected").remove();
 				}
 			});//end of Load button function
@@ -427,19 +426,21 @@
 					$('#loadDialog').dialog('option', 'title', 'Manage Saves');
 					$("#loadDialog-Manage").html("Done");
 					$("#loadDialog-Load").html("Delete");
-					$("#loadDialog-Cancel").hide();
+					$("#loadDialog-Cancel").html("Clear All");
 				}else{
 					$('#loadDialog').dialog('option', 'title', 'Load');
 					$("#loadDialog-Manage").html("Manage");
 					$("#loadDialog-Load").html("Load");
-					$("#loadDialog-Cancel").show();
+					$("#loadDialog-Cancel").html("Cancel");
 				}
 			});
 			
 			function loadThinnings(ca){//start load thinnings function
-				for(i=20;i<ca.length;i++){
-					$('#selectList').append("<option value='"+thinningsCounter+"'>"+ca[i]+"</option>");
-					thinningsCounter++;
+				if(ca[20]!="none"){
+					for(i=20;i<ca.length;i++){
+						$('#selectList').append("<option value='"+thinningsCounter+"'>"+ca[i]+"</option>");
+						thinningsCounter++;
+					}
 				}
 			}//end load thinnings function
 			
@@ -448,9 +449,8 @@
 			}//end load dialog reset
 			
 			$("#load").click(function(){//start load dialog opener function
-				var ca = getCookie("saves").split(",");
-				for(i=0;i<ca.length;i++){
-					$('#loadDialog-Select').append("<option value='"+i+"'>"+ca[i]+"</option>");
+				for(i=0;i<localStorage.length;i++){
+					$('#loadDialog-Select').append("<option value='"+i+"'>"+localStorage.key(i)+"</option>");
 				}
 				$("#loadDialog").dialog('open');
 			});//end load dialog opener function
@@ -472,7 +472,7 @@
 				$("#saveVariable").text(name);
 			}
 			$("#owDialog-Yes").click(function(){
-					document.cookie = $("#saveName").val() + "="+toStringOutput();
+					localStorage.setItem($("#saveName").val(), toStringOutput());
 					$("#saveDialog").dialog("close");
 					$("#owDialog").dialog("close");
 				});
@@ -481,20 +481,34 @@
 				});
 			//END overwrite function
 			
-			//START cookie handlers
-			function getCookie(cname) {
-				var name = cname + "=";
-				var ca = document.cookie.split(';');
-				for(var i=0; i<ca.length; i++) {
-					var c = ca[i];
-					while (c.charAt(0)==' ') c = c.substring(1);
-					if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-				}
-				return "";
+			//START clear function
+			$("#clearDialog").dialog({ //Dialog initialization
+					modal:true,
+					draggable:false,
+					resizeable:false,
+					position:{ my: "center center", at: "center center", of: "#main" },
+					show: 'blind',
+					hide: 'blind',
+					width: 300,
+					autoOpen:false,
+			}); //end of Dialog initialization
+			$("#clearDialog-Yes").click(function(){
+				localStorage.clear();
+				resetLoadSelect();
+				$("#clearDialog").dialog("close");
+				});
+			$("#clearDialog-No").click(function(){
+				$("#clearDialog").dialog("close");
+			});
+			//END ckear function
+			
+			//START localStorage handlers
+			function getSave(cname) {
+				return localStorage.getItem(cname);
 			}
-			function checkCookie(cname) {
-				var value=getCookie(cname);
-				if (value!="") {
+			function checkSave(cname) {
+				var value=getSave(cname);
+				if (value!=null) {
 					return true;
 				}else{
 					return false;
@@ -502,16 +516,16 @@
 			}
 			
 			function checkSaveName(name){
-				var ca = getCookie("saves").split(",");
-				for(i=0;i<ca.length;i++){
-					if(ca[i] == name){
+				var strg = localStorage.length
+				for(i=0;i<strg;i++){
+					if(localStorage.key(i) == name){
 						return true;
 					}else{
 						return false;
 					}
 				}
 			}
-			//END cookie handlers
+			//END localStorage handlers
 			
 			//START reset
 			function reset(){
@@ -733,9 +747,9 @@
 				</table>
 				<table id="loadDialog-Buttons">
 				<tr>
-					<td><div class="button" id="loadDialog-Load"><span id="loadSpan">Load</span></div></td>
-					<td><div class="button" id="loadDialog-Cancel"><span id="cancelSpan">Cancel</span></div></td>
-					<td><div class="button" id="loadDialog-Manage"<span id="manageSpan">Manage</span></div></td>
+					<td><div class="button" id="loadDialog-Load">Load</div></td>
+					<td><div class="button" id="loadDialog-Cancel">Cancel</div></td>
+					<td><div class="button" id="loadDialog-Manage">Manage</div></td>
 				</tr>
 			</table>
 			</div><!-- END loadDialog -->
@@ -748,6 +762,15 @@
 					</tr>
 				</table>
 			</div><!-- END owDialog -->
+			<div id="clearDialog" title="Clear All Saves?"><!-- START clearDialog -->
+				<span class="dialogText">Do you wish to permanently clear all saves?<br></span>
+				<table>
+					<tr>
+						<td><div class="button" id="clearDialog-Yes">Yes</div></td>
+						<td><div class="button" id="clearDialog-No">No</div></td>
+					</tr>
+				</table>
+			</div><!-- END clearDialog -->
 			<table id="formButtons">
 				<tr>
 					<td><div class="button" id="run">Run</div></td>
@@ -761,4 +784,3 @@
 		</div><!-- END main -->
 	</form>
 </body>
-
