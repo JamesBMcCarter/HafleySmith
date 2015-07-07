@@ -17,7 +17,7 @@
 		
 		#main {
 			background-color:lightgray;
-			max-width:360px;
+			max-width:1620px;
 			font-family:Helvetica;
 			box-shadow: 3px 3px 10px #777777;
 			margin-left:auto;
@@ -32,7 +32,8 @@
 		
 		#icDropDown{margin: 0px 0px 0px 15px;}
 		#icTBTable{width:100%;text-align:center;}
-		
+		#hardwoodCollapse{width:310px !important;}
+		#hardwood{width:300px !important;}
 		#hwDropDown{width:100%;}
 		
 		#heightAgeCurve{margin:5px;}
@@ -55,12 +56,21 @@
 		#loadDialog-Manage{display:inline;position:absolute;right:3px;bottom:3px;}
 		
 		
+		.collapseContainers{
+			min-width:320px;
+			display:inline-table;
+			margin-left:auto !important;
+			margin-right:auto !important;
+		}
 		
 		.collapse {
 			text-align:center;
 			background-color:black;
 			color:white;
 			font-size:18px;
+			width:100%;
+			max-width:320px;
+			display:inline-block;
 			border-top:1px solid white;
 			cursor:pointer;
 			padding-top:10px;
@@ -69,8 +79,11 @@
 		
 		.boxed {
 			background-color:lightgrey;
-			padding:5px;
+			padding:4px;
+			max-width:310px;
+			border:1px solid black;
 			display:none;
+			
 			font-size:.75em;
 		}
 		
@@ -90,7 +103,7 @@
 			font-size:.75em;
 			padding:5px;
 			max-width:50px;
-			min-width:40px;
+			min-width:39px;
 			text-align:center;
 			cursor:pointer;
 		}
@@ -164,6 +177,19 @@
 	</style>
 	<script>
 		$(document).ready(function(){
+			$(window).resize(function () {
+				if($(window).width()<645){
+					$("#main").css("max-width", 320);
+				}else if($(window).width()<969){
+					$("#main").css("max-width", 645);
+				}else if($(window).width()<1294){
+					$("#main").css("max-width", 969);
+				}else if($(window).width()<1620){
+					$("#main").css("max-width", 1294);
+				}else{
+					$("#main").css("max-width", 1620);
+				}
+			});
 			//START initialConditions functions
 			$("#icCollapse").click(function(){ //initialConditions collapse animation
         		$("#initialConditions").slideToggle("slow");
@@ -580,6 +606,7 @@
 					<span id="headingDiv-HSM">HAFLEY & SMITH MODEL</span>
 				</p>
 			</div><!-- END headingDiv -->
+			<div id="icContainer" class="collapseContainers">
 			<div id="icCollapse" class="collapse">Initial Conditions</div>
 			<div class="boxed" id="initialConditions">
 				<select name="icDropDown" id="icDropDown">
@@ -597,6 +624,7 @@
 						<div class="formTextBox">Survival:<br><input type="text" name="survival" size="5" id="survTB"></div>
 					</tr>
 				</table>
+				<div id="hwContainer" class="collapseContainers">
 				<div id="hardwoodCollapse" class="collapse">Hardwood</div>
 				<div class="boxed" id="hardwood">
 					<select name="hwDropDown" id="hwDropDown">
@@ -612,7 +640,10 @@
 						</tr>
 					</table>
 				</div><!-- END hardwood -->
+				</div>
 			</div><!-- END initialConditions -->
+			</div>
+			<div id="siContainer" class="collapseContainers">
 			<div id="siCollapse" class="collapse">Site Index</div>
 			<div class="boxed" id="siteIndex">
 				<input type="radio" name="baseAge" value="25" id="BA25" checked>Base Age 25
@@ -631,6 +662,8 @@
 					</select>
 				</div> <!-- END heightAgeCurve -->
 			</div><!-- END siteIndex -->
+			</div>
+			<div id="ffContainer" class="collapseContainers">
 			<div id="ffCollapse" class="collapse">Fusiform</div>
 			<div class="boxed" id="fusiform">
 				<table id="ffTable">
@@ -647,7 +680,9 @@
 						<td><input type="text" name="hazardRating" id="hazardRating" size="7"></td>
 					</tr>
 				</table>
-			</div><!-- END fusiform -->
+			</div>
+			</div>
+			<div id="thinningsContainer" class="collapseContainers">
 			<div id="thinningsCollapse" class="collapse">Thinnings</div>
 			<div class="boxed" id="thinnings">
 				<input type="checkbox" name="enableThinnings">Enable Thinnings
@@ -698,6 +733,8 @@
 					</tr>
 				</table>
 			</div><!-- END thinnings -->
+			</div>
+			<div id="otContainer" class="collapseContainers">
 			<div id="otCollapse" class="collapse">Output Type</div>
 			<div class="boxed" id="outputtype">
 				Output to: <span id="outputVariable">HTML</span>
@@ -726,6 +763,7 @@
 					</tr>
 				</table>
 			</div><!-- END outputtype -->
+			</div>
 			<div class="dialog" id="saveDialog" title="Save"><!-- START saveDialog -->
 				<br>
 				<span class="dialogText">Save as:</span> <input type="text" id="saveName">
@@ -772,6 +810,7 @@
 					</tr>
 				</table>
 			</div><!-- END clearDialog -->
+			<div id="btContainer" class="collapseContainers">
 			<table id="formButtons">
 				<tr>
 					<td><div class="button" id="run">Run</div></td>
@@ -782,6 +821,7 @@
 					<td><div class="button" id="help">Help</div></td>
 				</tr>
 			</table>
+			</div>
 		</div><!-- END main -->
 	</form>
 </body>
