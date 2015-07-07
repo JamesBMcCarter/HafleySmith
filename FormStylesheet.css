@@ -1,0 +1,151 @@
+body {margin:0px;padding:0px;}
+
+input:disabled {
+	background-color:lightgray;
+}
+
+#main {
+	background-color:lightgray;
+	max-width:360px;
+	font-family:Helvetica;
+	box-shadow: 3px 3px 10px #777777;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#headingDiv {background-color:#CC0000;display:flex;}
+#headingDiv-p {margin:5px 0px 5px 20px;font-size:24px;color:white;}
+#headingDiv-NCState{font-weight:bolder;white-space:nowrap;}
+#headingDiv-University{font-weight:100;}
+#headingDiv-HSM{font-size:10px;text-align:right;white-space:nowrap;}
+
+#icDropDown{margin: 0px 0px 0px 15px;}
+#icTBTable{width:100%;text-align:center;}
+
+#hwDropDown{width:100%;}
+
+#heightAgeCurve{margin:5px;}
+#heightAgeSelect{align:center;width:95%;}
+
+#ffTable{font-size:.9em;}
+
+#dialogTable1 td{padding:5px;font-size:.6em;}
+#thinningContainer{width:100%;}
+#thinningContainer-select{width:75%;}
+#selectList{cursor:pointer;width:250px;-webkit-appearance:listbox;}
+#thinningContainer-buttons{text-align:center;}
+
+#formButtons{width:40%;text-align:center;}
+#loadDialog-Select{cursor:pointer;width:294px;-webkit-appearance:listbox;}
+#saveDialog{min-height:0px !important;}
+#owDialog{min-height:0px !important;}
+#clearDialog{min-height:0px !important;}
+#loadDialog{min-height:0px !important;}
+#loadDialog-Manage{display:inline;position:absolute;right:3px;bottom:3px;}
+
+
+
+.collapse {
+	text-align:center;
+	background-color:black;
+	color:white;
+	font-size:18px;
+	border-top:1px solid white;
+	cursor:pointer;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+
+.boxed {
+	background-color:lightgrey;
+	padding:5px;
+	display:none;
+	font-size:.75em;
+}
+
+.formTextBox {
+	display:inline-block;
+	width:25%
+}
+
+.hwTD {
+	text-align:center;
+	width:50%;
+}
+
+.button {
+	background-color:#CC0000;
+	color:white;
+	font-size:.75em;
+	padding:5px;
+	max-width:50px;
+	min-width:40px;
+	text-align:center;
+	cursor:pointer;
+}
+
+.dialog {
+	text-align:center;
+}
+
+.dialogText{
+	font-size:.80em;
+	margin:10px;
+}
+
+.ui-widget {
+	font-family: Helvetica;
+}
+
+.ui-widget-overlay {
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 100%; 
+	background: #000;
+	opacity: 0.3;
+}
+
+.ui-front {
+	z-index: 100;
+}
+
+.ui-widget-content {
+	background: #FFFFFF;
+	border: 1px solid #000000;
+	color: #666666;
+}
+
+.ui-dialog {
+	left: 0;
+	outline: 0 none;
+	padding: 0;
+	position: absolute;
+	top: 0;
+}
+
+.ui-dialog .ui-dialog-content {
+	background: none repeat scroll 0 0 transparent;
+	border: 0 none;
+	overflow: auto;
+	position: relative;
+	padding: 0;
+}
+
+.ui-widget-header {
+	background: #CC0000;
+	border: 0;
+	color: #fff;
+	font-weight: normal;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+	padding: 0.1em .5em;
+	position: relative;
+	font-size: 1em;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+	display:none;
+}
