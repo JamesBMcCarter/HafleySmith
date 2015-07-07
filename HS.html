@@ -272,10 +272,10 @@
 			//END outputType functions
 			
 			//START toString function
-			var runOutput = "";
-			var thinningsString = "";
+			var runOutput = ""; //output string
+			var thinningsString = ""; //output string for thinnings collection
 			
-			function collectThinnings() {
+			function collectThinnings() { //start thinning save collection
 				var thinningsArray = document.getElementById("selectList").options;
 				for(i=0;i<thinningsArray.length;i++){
 					thinningsString = thinningsString + "^" + thinningsArray[i].text;
@@ -285,17 +285,17 @@
 					return "none";
 				}
 				return thinningsString;
-			}
+			} //end thinning save collection
 			
-			function checkTB(e) {
+			function checkTB(e) { //start checks textbox values before running **unfinished**
 				if(e == ''){
-					return " ";
+					return "";
 				}else{
 					return e;
 				}
-			}
+			} //end checks textbox values before running
 			
-			function toStringOutput() {
+			function toStringOutput() { //start save string format
 				thinningsString = "";
 				runOutput = $("#icDropDown").val()+"^"
 					+checkTB($('#tpaTB').val())+"^"
@@ -319,13 +319,12 @@
 					+checkTB($("#interval").val())
 					+collectThinnings()
 				return runOutput;
-			}
+			} //end save string format
 			
-			$("#run").click(function(){
+			$("#run").click(function(){ //start run button
 				var outputString = toStringOutput();
 				alert(outputString);
-				
-			});
+			}); // end run button
 			//END toString function
 			
 			//START save function
@@ -421,7 +420,7 @@
 				}
 			});//end of Load button function
 			
-			$("#loadDialog-Manage").click(function(){
+			$("#loadDialog-Manage").click(function(){ //start manage mode toggle
 				if($("#loadDialog-Manage").html()=="Manage"){
 					$('#loadDialog').dialog('option', 'title', 'Manage Saves');
 					$("#loadDialog-Manage").html("Done");
@@ -433,7 +432,7 @@
 					$("#loadDialog-Load").html("Load");
 					$("#loadDialog-Cancel").html("Cancel");
 				}
-			});
+			}); //end manage mode toggle
 			
 			function loadThinnings(ca){//start load thinnings function
 				if(ca[20]!="none"){
@@ -467,18 +466,20 @@
 					width: 300,
 					autoOpen:false,
 			}); //end of Dialog initialization
-			function owError(name) {
+			
+			function owError(name) { //start overwrite error dialog handler
 				$("#owDialog").dialog('open');
 				$("#saveVariable").text(name);
-			}
-			$("#owDialog-Yes").click(function(){
+			} //end overwrite error dialog handler
+			
+			$("#owDialog-Yes").click(function(){ //start overwrite yes/no buttons
 					localStorage.setItem($("#saveName").val(), toStringOutput());
 					$("#saveDialog").dialog("close");
 					$("#owDialog").dialog("close");
 				});
 				$("#owDialog-No").click(function(){
 					$("#owDialog").dialog("close");
-				});
+				}); //end overwrite yes/no buttons
 			//END overwrite function
 			
 			//START clear function
@@ -492,30 +493,30 @@
 					width: 300,
 					autoOpen:false,
 			}); //end of Dialog initialization
-			$("#clearDialog-Yes").click(function(){
+			
+			$("#clearDialog-Yes").click(function(){ //start clear saves dialog yes button
 				localStorage.clear();
 				resetLoadSelect();
 				$("#clearDialog").dialog("close");
-				});
-			$("#clearDialog-No").click(function(){
+			}); //end clear saves dialog yes button
+			$("#clearDialog-No").click(function(){ //start clear saves dialog no button
 				$("#clearDialog").dialog("close");
-			});
+			}); //end clear saves dialog no button
 			//END ckear function
 			
 			//START localStorage handlers
-			function getSave(cname) {
+			function getSave(cname) { //start getting local save information
 				return localStorage.getItem(cname);
-			}
-			function checkSave(cname) {
-				var value=getSave(cname);
-				if (value!=null) {
+			} //end getting local save information
+			function checkSave(cname) { //start check for local save
+				if (cname!=null) {
 					return true;
 				}else{
 					return false;
 				}
-			}
+			} //end check for local save
 			
-			function checkSaveName(name){
+			function checkSaveName(name){ //start check save
 				var strg = localStorage.length
 				for(i=0;i<strg;i++){
 					if(localStorage.key(i) == name){
@@ -524,11 +525,11 @@
 						return false;
 					}
 				}
-			}
+			} //end check save
 			//END localStorage handlers
 			
 			//START reset
-			function reset(){
+			function reset(){ //start reset form
 				$("#icDropDown").val("0");
 				$('#tpaTB').val("");
 				$("#ageTB").val("");
@@ -552,19 +553,19 @@
 				$("#interval").val("");
 				$("#thinningContainer-select").html("<select name='selectList' id='selectList' multiple></select>");
 				thinningsCounter = 0;
-			}
+			} //end reset form
 			
-			$("#reset").click(function(){
+			$("#reset").click(function(){ //start reset button
 				reset();
-			});
+			}); //end reset button
 			//END reset
 			
 			//clear disabled textboxes
-			$("select").change(function() {
+			$("select").change(function() { //start clear disabled textboxes
 				if($("input[type='text']").is(':disabled')){
 					$("input:disabled").val("");
 				}
-			});
+			}); //end clear disabled textboxes
 			//end clear disabled function
 		});
 	</script>
