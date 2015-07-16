@@ -194,7 +194,7 @@
 				$("#BA25").prop('checked', true);
 				$("#BA50").prop('checked', false);
 				$("#siteIndexValue").val("65");
-				$("#heightAgeSelect").val("2");
+				$("#heightAgeSelect").val("piedmont/upland");
 				$("#enableFusiform").prop('checked', false);
 				$("#infection").val("");
 				$("#ffatAgeTB").val("");
@@ -434,15 +434,16 @@
 			//START RUN FUNCTION
 			$("#run").click(function(){ //start run button
 				var outputString = toStringOutput();
-				var resultsWindow = window.open("", "_blank", "width=600,height=400");
-				resultsWindow.document.write("<style>td{padding:2px;} #labels td{border-bottom:1px solid;}</style><div style='text-align:center'><p><h2>NCSU PLANTATION MANAGEMENT SIMULATOR</h2></p><h2>YIELD TABLE (Loblolly)</h2><p></p></div>"+
-				"<div><table style='text-align:center'><tr><td>SITE INDEX<br>(BASE AGE 25)</td><td>PLANTING DENSITY<br>(STEMS/ACRE)</td><td>PERCENT PLANTING<br>SURVIVAL</td><td>INITIAL SURVIVAL<br>(STEMS/ACRE)</td></tr><tr><td>65.0</td><td>700</td><td>85</td><td>595</td></tr></table></div>"+
+				ca = outputString.split('^');
+				var resultsWindow = window.open("", "_blank", "width=660,height=400");
+				resultsWindow.document.write("<title>Results</title><style>td{padding:2px;} #labels td{border-bottom:1px solid;} #end td{border-top:1px solid;}</style><div style='text-align:center'><p><h2>NCSU PLANTATION MANAGEMENT SIMULATOR</h2></p><h2>YIELD TABLE ("+ca[0]+")</h2><p></p></div>"+
+				"<table style='text-align:center;margin-left:auto;margin-right:auto;'><tr><td>SITE INDEX<br>(BASE AGE "+ca[9]+")</td><td>PLANTING DENSITY<br>(STEMS/ACRE)</td><td>PERCENT PLANTING<br>SURVIVAL</td><td>INITIAL SURVIVAL<br>(STEMS/ACRE)</td></tr><tr><td>"+ca[10]+"</td><td>"+ca[2]+"</td><td>"+ca[5]+"</td><td>595</td></tr></table>"+
 				"<table style='text-align:center;margin-left:auto;margin-right:auto;'>"+
 				"<tr><td></td><td>DOM</td><td></td><td>AVE</td><td>AVE</td><td colspan='2'>BASAL AREA</td><td colspan='2'>TOTAL VOLUME</td><td colspan='2'>PINE</td></tr>"+
 				"<tr><td>AGE</td><td>HGT</td><td>TPA</td><td>DIA</td><td>HGT</td><td>PINE</td><td>HDWD</td><td>PINE</td><td>HDWD</td><td>MAI</td><td>PAI</td></tr>"+
 				"<tr id='labels'><td>(yrs)</td><td>(ft)</td><td></td><td>(in)</td><td>(ft)</td><td colspan='2'>(sq ft)</td><td colspan='2'>(cu ft - ib)</td><td></td><td></td></tr>"+
 				"<tr><td>11</td><td>22</td><td>33</td><td>44</td><td>55</td><td>66</td><td>77</td><td>88</td><td>99</td><td>1010</td><td>1111</td></tr>"+
-				"</table>"
+				"<tr id='end'><td></td><td></td><td></td><td></td><td></td><td colspan='2'></td><td colspan='2'></td><td></td><td></td></tr></table><p style='text-align:center'>NOTE: HEIGHT/AGE CURVE - <span style='text-transform:uppercase'>"+ca[11]+"</span></p>"
 				);
 			}); // end run button
 			//END RUN FUNCTION
@@ -681,7 +682,7 @@
 				$("#BA25").prop('checked', true);
 				$("#BA50").prop('checked', false);
 				$("#siteIndexValue").val("");
-				$("#heightAgeSelect").val("0");
+				$("#heightAgeSelect").val("piedmont/upland");
 				$("#enableFusiform").prop('checked', false);
 				$("#infection").val("");
 				$("#ffatAgeTB").val("");
@@ -776,9 +777,9 @@
 					Height/Age Curve:
 					<br>
 					<select name="heightAgeSelect" id="heightAgeSelect">
-						<option value="0">lower coastal plain/wet sites</option>
-						<option value="1">upper coastal plain</option>
-						<option value="2">piedmont/upland</option>
+						<option value="lower coastal plain/wet sites">lower coastal plain/wet sites</option>
+						<option value="upper coastal plain">upper coastal plain</option>
+						<option value="piedmont/upland">piedmont/upland</option>
 					</select>
 				</div> <!-- END heightAgeCurve -->
 			</div><!-- END siteIndex -->
