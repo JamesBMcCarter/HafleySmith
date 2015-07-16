@@ -177,6 +177,39 @@
 	</style>
 	<script>
 		$(document).ready(function(){
+			//START PAGE INITIALIZATION
+			checkEnabledFF();
+			checkEnabledThinning();
+			$("body").ready(function(){ //start reset form
+				$("#loblollyPine").prop('checked', true);
+				$("#whitePine").prop('checked', false);
+				$("#icDropDown").val("0");
+				$('#tpaTB').val("700");
+				$("#ageTB").val("");
+				$("#sizeTB").val("");
+				$("#survTB").val("85");
+				$("#hwDropDown").val("0");
+				$("#totalBATB").val("");
+				$("#atAgeTB").val("");
+				$("#BA25").prop('checked', true);
+				$("#BA50").prop('checked', false);
+				$("#siteIndexValue").val("65");
+				$("#heightAgeSelect").val("2");
+				$("#enableFusiform").prop('checked', false);
+				$("#infection").val("");
+				$("#ffatAgeTB").val("");
+				$("#hazardRating").val("");
+				$("#enableThinnings").prop('checked', false);
+				$("#outputVariable").text("HTML");
+				$("#start").val("5");
+				$("#end").val("35");
+				$("#interval").val("5");
+				$("#thinningContainer-select").html("<select name='selectList' id='selectList' multiple></select>");
+				thinningsCounter = 0;
+			});//END default settings
+			//END PAGE INITIALIZATION
+			
+			//START FORM SIZE SNAPPING
 			if($(window).width()<645){
 					$("#main").css("max-width", 320);
 				}else if($(window).width()<969){
@@ -201,7 +234,9 @@
 					$("#main").css("max-width", 1620);
 				}
 			});
-			//START initialConditions functions
+			//END FORM SIZE SNAPPING
+			
+			//START INITIAL CONDITIONS FUNCTIONS
 			$("#icCollapse").click(function(){ //initialConditions collapse animation
         		$("#initialConditions").slideToggle("slow");
     		}); //end of initialConditions collapse animation
@@ -247,24 +282,72 @@
 					$("#atAgeTB").removeAttr("disabled");
 				}
 			}); //end of hardwood textbox function
-			//END initialConditions functions
+			//END INITIALCONDITIONS FUNCTIONS
 			
-			//START siteIndex functions
+			//START SITE INDEX FUNCTIONS
 			$("#siCollapse").click(function(){ //siteIndex collapse animation
         		$("#siteIndex").slideToggle("slow");
     		}); //end of siteIndex collapse animation
-			//END siteIndex functions
+			//END SITEINDEX FUNCTIONS
 			
-			//START fusiform functions
+			//START FUSIFORM FUNCTIONS
 			$("#ffCollapse").click(function(){ //fusiform collapse animation
         		$("#fusiform").slideToggle("slow");
     		}); //end of fusiform collapse animation
-			//END fusiform functions
 			
-			//START thinnings functions
+			function checkEnabledFF (){ //enables and disables fusiform
+				if($("#enableFusiform").is(':checked')==false){
+					$("#infection").attr("disabled", "disabled");
+					$("#ffatAgeTB").attr("disabled", "disabled");
+					$("#hazardRating").attr("disabled", "disabled");
+				}else{
+					$("#infection").removeAttr("disabled");
+					$("#ffatAgeTB").removeAttr("disabled");
+					$("#hazardRating").removeAttr("disabled");
+				}
+			}
+			
+			$("#enableFusiform").click(function(){ //click event for fusiform enable
+				checkEnabledFF();
+			});
+			//END FUSIFORM FUNCTIONS
+			
+			//START THINNINGS FUNCTIONS
 			$("#thinningsCollapse").click(function(){ //thinnings collapse animation
         		$("#thinnings").slideToggle("slow");
     		}); //end of thinnings collapse animation
+			
+			function checkEnabledThinning (){ //enables or disables thinnings section
+				if($("#enableThinnings").is(':checked')==false){
+					$("#selectList").attr("disabled", "disabled");
+					$("#addThinning").css("pointer-events","none");
+					$("#delThinning").css("pointer-events","none");
+					$("#addThinning").css("background-color","grey");
+					$("#delThinning").css("background-color","grey");
+				}else{
+					$("#selectList").removeAttr("disabled");
+					$("#addThinning").css("pointer-events","auto");
+					$("#delThinning").css("pointer-events","auto");
+					$("#addThinning").css("background-color","#CC0000");
+					$("#delThinning").css("background-color","#CC0000");
+				}
+			}
+			
+			$("#enableThinnings").click(function(){ //click event for thinning enable
+				checkEnabledThinning();
+			});
+			
+			function collectThinnings() { //start thinning save collection
+				var thinningsArray = document.getElementById("selectList").options;
+				for(i=0;i<thinningsArray.length;i++){
+					thinningsString = thinningsString + "^" + thinningsArray[i].text;
+					
+				}
+				if (thinningsArray.length == 0){
+					return "none";
+				}
+				return thinningsString;
+			} //end thinning save collection
 			
 			$("#thinningDialog").dialog({ //Dialog initialization
 				modal:true,
@@ -300,29 +383,17 @@
 					$(this).remove();
 				});
 			});//end of Delete button function
-			//END thinnings functions
+			//END THINNING FUNCTIONS
 			
-			//START outputType functions
+			//START OUTPUTTYPE FUNCTIONS
 			$("#otCollapse").click(function(){
         		$("#outputtype").slideToggle("slow");
     		});
-			//END outputType functions
+			//END OUTPUTTYPE FUNCTIONS
 			
-			//START toString function
+			//START TOSTRING FUNCTION
 			var runOutput = ""; //output string
 			var thinningsString = ""; //output string for thinnings collection
-			
-			function collectThinnings() { //start thinning save collection
-				var thinningsArray = document.getElementById("selectList").options;
-				for(i=0;i<thinningsArray.length;i++){
-					thinningsString = thinningsString + "^" + thinningsArray[i].text;
-					
-				}
-				if (thinningsArray.length == 0){
-					return "none";
-				}
-				return thinningsString;
-			} //end thinning save collection
 			
 			function checkTB(e) { //start checks textbox values before running **unfinished**
 				if(e == ''){
@@ -334,7 +405,8 @@
 			
 			function toStringOutput() { //start save string format
 				thinningsString = "";
-				runOutput = $("#icDropDown").val()+"^"
+				runOutput = $("input[name='species']:checked").val()+"^"
+					+$("#icDropDown").val()+"^"
 					+checkTB($('#tpaTB').val())+"^"
 					+checkTB($("#ageTB").val())+"^"
 					+checkTB($("#sizeTB").val())+"^"
@@ -357,14 +429,25 @@
 					+collectThinnings()
 				return runOutput;
 			} //end save string format
-			
-			$("#run").click(function(){ //start run button
-				var outputString = toStringOutput();
-				alert(outputString);
-			}); // end run button
 			//END toString function
 			
-			//START save function
+			//START RUN FUNCTION
+			$("#run").click(function(){ //start run button
+				var outputString = toStringOutput();
+				var resultsWindow = window.open("", "_blank", "width=600,height=400");
+				resultsWindow.document.write("<style>td{padding:2px;} #labels td{border-bottom:1px solid;}</style><div style='text-align:center'><p><h2>NCSU PLANTATION MANAGEMENT SIMULATOR</h2></p><h2>YIELD TABLE (Loblolly)</h2><p></p></div>"+
+				"<div><table style='text-align:center'><tr><td>SITE INDEX<br>(BASE AGE 25)</td><td>PLANTING DENSITY<br>(STEMS/ACRE)</td><td>PERCENT PLANTING<br>SURVIVAL</td><td>INITIAL SURVIVAL<br>(STEMS/ACRE)</td></tr><tr><td>65.0</td><td>700</td><td>85</td><td>595</td></tr></table></div>"+
+				"<table style='text-align:center;margin-left:auto;margin-right:auto;'>"+
+				"<tr><td></td><td>DOM</td><td></td><td>AVE</td><td>AVE</td><td colspan='2'>BASAL AREA</td><td colspan='2'>TOTAL VOLUME</td><td colspan='2'>PINE</td></tr>"+
+				"<tr><td>AGE</td><td>HGT</td><td>TPA</td><td>DIA</td><td>HGT</td><td>PINE</td><td>HDWD</td><td>PINE</td><td>HDWD</td><td>MAI</td><td>PAI</td></tr>"+
+				"<tr id='labels'><td>(yrs)</td><td>(ft)</td><td></td><td>(in)</td><td>(ft)</td><td colspan='2'>(sq ft)</td><td colspan='2'>(cu ft - ib)</td><td></td><td></td></tr>"+
+				"<tr><td>11</td><td>22</td><td>33</td><td>44</td><td>55</td><td>66</td><td>77</td><td>88</td><td>99</td><td>1010</td><td>1111</td></tr>"+
+				"</table>"
+				);
+			}); // end run button
+			//END RUN FUNCTION
+			
+			//START SAVE FUNCTIONS
 			$("#saveDialog").dialog({ //Dialog initialization
 				modal:true,
 				draggable:false,
@@ -391,106 +474,6 @@
 					$("#saveDialog").dialog("close");
 				}
 			});//end of Save button function
-			
-			$("#save").click(function(){
-				$("#saveDialog").dialog('open');
-			});
-			//END save function
-			
-			//START load function
-			$("#loadDialog").dialog({ //Dialog initialization
-				modal:true,
-				draggable:false,
-				resizeable:false,
-				position:{ my: "center center", at: "center center", of: "#main" },
-				show: 'blind',
-				hide: 'blind',
-				width: 300,
-				autoOpen:false,
-			}); //end of Dialog initialization
-			
-			$('#loadDialog-Cancel').click(function(){ //Cancel button function
-				if($('#loadDialog-Cancel').html()=="Cancel"){
-					resetLoadSelect();
-					$("#loadDialog").dialog("close");
-				}else{
-					$("#clearDialog").dialog("open");
-				}
-			});//end of Cancel button function
-			
-			$('#loadDialog-Load').click(function(){ //Load button function
-				if($("#loadDialog-Load").html()=="Load"){
-					reset();
-					var ca = getSave($("#loadDialog-Select option:selected").text()).split("^");
-					$("#icDropDown").val(ca[0]);
-					$('#tpaTB').val(ca[1]);
-					$("#ageTB").val(ca[2]);
-					$("#sizeTB").val(ca[3]);
-					$("#survTB").val(ca[4]);
-					$("#hwDropDown").val(ca[5]);
-					$("#totalBATB").val(ca[6]);
-					$("#atAgeTB").val(ca[7]);
-					if(ca[8] == 25){
-						$("#BA25").prop('checked', true);
-						$("#BA50").prop('checked', false);
-					}else{
-						$("#BA25").prop('checked', false);
-						$("#BA50").prop('checked', true);
-					}
-					$("#siteIndexValue").val(ca[9]);
-					$("#heightAgeSelect").val(ca[10]);
-					$("#enableFusiform").prop('checked', ca[11]);
-					$("#infection").val(ca[12]);
-					$("#ffatAgeTB").val(ca[13]);
-					$("#hazardRating").val(ca[14]);
-					$("#enableThinnings").prop('checked', ca[15]);
-					$("#outputVariable").text(ca[16]);
-					$("#start").val(ca[17]);
-					$("#end").val(ca[18]);
-					$("#interval").val(ca[19]);
-					loadThinnings(ca);
-					resetLoadSelect();
-					$("#loadDialog").dialog("close");
-				}else{
-					localStorage.removeItem($("#loadDialog-Select option:selected").text());
-					$("#loadDialog-Select option:selected").remove();
-				}
-			});//end of Load button function
-			
-			$("#loadDialog-Manage").click(function(){ //start manage mode toggle
-				if($("#loadDialog-Manage").html()=="Manage"){
-					$('#loadDialog').dialog('option', 'title', 'Manage Saves');
-					$("#loadDialog-Manage").html("Done");
-					$("#loadDialog-Load").html("Delete");
-					$("#loadDialog-Cancel").html("Clear All");
-				}else{
-					$('#loadDialog').dialog('option', 'title', 'Load');
-					$("#loadDialog-Manage").html("Manage");
-					$("#loadDialog-Load").html("Load");
-					$("#loadDialog-Cancel").html("Cancel");
-				}
-			}); //end manage mode toggle
-			
-			function loadThinnings(ca){//start load thinnings function
-				if(ca[20]!="none"){
-					for(i=20;i<ca.length;i++){
-						$('#selectList').append("<option value='"+thinningsCounter+"'>"+ca[i]+"</option>");
-						thinningsCounter++;
-					}
-				}
-			}//end load thinnings function
-			
-			function resetLoadSelect(){//start load dialog reset
-				$("#selectCell").html("<select id='loadDialog-Select' size='3'></select>")
-			}//end load dialog reset
-			
-			$("#load").click(function(){//start load dialog opener function
-				for(i=0;i<localStorage.length;i++){
-					$('#loadDialog-Select').append("<option value='"+i+"'>"+localStorage.key(i)+"</option>");
-				}
-				$("#loadDialog").dialog('open');
-			});//end load dialog opener function
-			//END load function
 			
 			//START overwrite function
 			$("#owDialog").dialog({ //Dialog initialization
@@ -519,6 +502,103 @@
 				}); //end overwrite yes/no buttons
 			//END overwrite function
 			
+			$("#save").click(function(){
+				$("#saveDialog").dialog('open');
+			});
+			//END SAVE FUNCTIONS
+			
+			//START LOAD FUNCTIONS
+			$("#loadDialog").dialog({ //Dialog initialization
+				modal:true,
+				draggable:false,
+				resizeable:false,
+				position:{ my: "center center", at: "center center", of: "#main" },
+				show: 'blind',
+				hide: 'blind',
+				width: 300,
+				autoOpen:false,
+			}); //end of Dialog initialization
+			
+			$('#loadDialog-Cancel').click(function(){ //Cancel button function
+				if($('#loadDialog-Cancel').html()=="Cancel"){
+					resetLoadSelect();
+					$("#loadDialog").dialog("close");
+				}else{
+					$("#clearDialog").dialog("open");
+				}
+			});//end of Cancel button function
+			
+			$('#loadDialog-Load').click(function(){ //Load button function
+				if($("#loadDialog-Load").html()=="Load"){
+					reset();
+					var ca = getSave($("#loadDialog-Select option:selected").text()).split("^");
+					if(ca[0] == 'Loblolly'){
+						$("#loblollyPine").prop('checked', true);
+						$("#whitePine").prop('checked', false);
+					}else{
+						$("#loblollyPine").prop('checked', false);
+						$("#whitePine").prop('checked', true);
+					}
+					$("#icDropDown").val(ca[1]);
+					$('#tpaTB').val(ca[2]);
+					$("#ageTB").val(ca[3]);
+					$("#sizeTB").val(ca[4]);
+					$("#survTB").val(ca[5]);
+					$("#hwDropDown").val(ca[6]);
+					$("#totalBATB").val(ca[7]);
+					$("#atAgeTB").val(ca[8]);
+					if(ca[9] == 25){
+						$("#BA25").prop('checked', true);
+						$("#BA50").prop('checked', false);
+					}else{
+						$("#BA25").prop('checked', false);
+						$("#BA50").prop('checked', true);
+					}
+					$("#siteIndexValue").val(ca[10]);
+					$("#heightAgeSelect").val(ca[11]);
+					if(ca[12] == true){
+						$("#enableFusiform").prop('checked', true);
+					}else{
+						$("#enableFusiform").prop('checked', false);
+					}
+					$("#infection").val(ca[13]);
+					$("#ffatAgeTB").val(ca[14]);
+					$("#hazardRating").val(ca[15]);
+					if(ca[16] == true){
+						$("#enableThinnings").prop('checked', true);
+					}else{
+						$("#enableThinnings").prop('checked', false);
+					}
+					$("#outputVariable").text(ca[17]);
+					$("#start").val(ca[18]);
+					$("#end").val(ca[19]);
+					$("#interval").val(ca[20]);
+					loadThinnings(ca);
+					checkEnabledFF();
+					checkEnabledThinning();
+					resetLoadSelect();
+					thinningsCounter = 0;
+					$("#loadDialog").dialog("close");
+				}else{
+					localStorage.removeItem($("#loadDialog-Select option:selected").text());
+					$("#loadDialog-Select option:selected").remove();
+				}
+			});//end of Load button function
+			
+			$("#loadDialog-Manage").click(function(){ //start manage mode toggle
+				if($("#loadDialog-Manage").html()=="Manage"){
+					$('#loadDialog').dialog('option', 'title', 'Manage Saves');
+					$("#loadDialog-Manage").html("Done");
+					$("#loadDialog-Load").html("Delete");
+					$("#loadDialog-Cancel").html("Clear All");
+				}else{
+					$('#loadDialog').dialog('option', 'title', 'Load');
+					$("#loadDialog-Manage").html("Manage");
+					$("#loadDialog-Load").html("Load");
+					$("#loadDialog-Cancel").html("Cancel");
+				}
+			}); //end manage mode toggle
+			
 			//START clear function
 			$("#clearDialog").dialog({ //Dialog initialization
 					modal:true,
@@ -541,7 +621,28 @@
 			}); //end clear saves dialog no button
 			//END ckear function
 			
-			//START localStorage handlers
+			function loadThinnings(ca){//start load thinnings function
+				if(ca[21]!="none"){
+					for(i=21;i<ca.length;i++){
+						$('#selectList').append("<option value='"+thinningsCounter+"'>"+ca[i]+"</option>");
+						thinningsCounter++;
+					}
+				}
+			}//end load thinnings function
+			
+			function resetLoadSelect(){//start load dialog reset
+				$("#selectCell").html("<select id='loadDialog-Select' size='3'></select>")
+			}//end load dialog reset
+			
+			$("#load").click(function(){//start load dialog opener function
+				for(i=0;i<localStorage.length;i++){
+					$('#loadDialog-Select').append("<option value='"+i+"'>"+localStorage.key(i)+"</option>");
+				}
+				$("#loadDialog").dialog('open');
+			});//end load dialog opener function
+			//END LOAD FUNCTIONS
+			
+			//START LOCALSTORAGE HANDLERS
 			function getSave(cname) { //start getting local save information
 				return localStorage.getItem(cname);
 			} //end getting local save information
@@ -563,10 +664,12 @@
 					}
 				}
 			} //end check save
-			//END localStorage handlers
+			//END LOCALSTORAGE HANDLERS
 			
-			//START reset
+			//START RESET
 			function reset(){ //start reset form
+				$("#loblollyPine").prop('checked', true);
+				$("#whitePine").prop('checked', false);
 				$("#icDropDown").val("0");
 				$('#tpaTB').val("");
 				$("#ageTB").val("");
@@ -590,12 +693,9 @@
 				$("#interval").val("");
 				$("#thinningContainer-select").html("<select name='selectList' id='selectList' multiple></select>");
 				thinningsCounter = 0;
+				checkEnabledFF();
+				checkEnabledThinning();
 			} //end reset form
-			
-			$("#reset").click(function(){ //start reset button
-				reset();
-			}); //end reset button
-			//END reset
 			
 			//clear disabled textboxes
 			$("select").change(function() { //start clear disabled textboxes
@@ -604,6 +704,11 @@
 				}
 			}); //end clear disabled textboxes
 			//end clear disabled function
+			
+			$("#reset").click(function(){ //start reset button
+				reset();
+			}); //end reset button
+			//END RESET
 		});
 	</script>
 </head>
@@ -620,6 +725,10 @@
 			<div id="icContainer" class="collapseContainers">
 			<div id="icCollapse" class="collapse">Initial Conditions</div>
 			<div class="boxed" id="initialConditions">
+				<input type="radio" name="species" id="loblollyPine" value="Loblolly" checked>Loblolly pine
+				<input type="radio" name="species" id="whitePine" value="White">White pine
+				<br>
+				<br>
 				<select name="icDropDown" id="icDropDown">
 					<option value="0">TPA at establishment</option>
 					<option value="1">TPA and Age</option>
@@ -685,10 +794,10 @@
 						<td>Hazard rating:</td>
 					</tr>
 					<tr>
-						<td><div class="button" id="viewMap">View Map</div></td>
-						<td><input type="text" name="infection%" id="infection" size="7"></td>
-						<td><input type="text" name="atAge" id="ffatAgeTB" size="7"></td>
-						<td><input type="text" name="hazardRating" id="hazardRating" size="7"></td>
+						<td><div class="button" id="viewMap" onclick="window.open('http://i.imgur.com/W140xwC.png', 'MsgWindow', 'width=640, height=400');">View Map</div></td>
+						<td><input type="text" name="infection%" id="infection" size="6"></td>
+						<td><input type="text" name="atAge" id="ffatAgeTB" size="6"></td>
+						<td><input type="text" name="hazardRating" id="hazardRating" size="6"></td>
 					</tr>
 				</table>
 			</div>
@@ -696,7 +805,7 @@
 			<div id="thinningsContainer" class="collapseContainers">
 			<div id="thinningsCollapse" class="collapse">Thinnings</div>
 			<div class="boxed" id="thinnings">
-				<input type="checkbox" name="enableThinnings">Enable Thinnings
+				<input type="checkbox" name="enableThinnings" id="enableThinnings">Enable Thinnings
 				<br>
 				<br>
 				<div id="thinningDialog" title="Add Thinning">
