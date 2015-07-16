@@ -6,7 +6,7 @@ input:disabled {
 
 #main {
 	background-color:lightgray;
-	max-width:360px;
+	max-width:1620px;
 	font-family:Helvetica;
 	box-shadow: 3px 3px 10px #777777;
 	margin-left:auto;
@@ -21,7 +21,8 @@ input:disabled {
 
 #icDropDown{margin: 0px 0px 0px 15px;}
 #icTBTable{width:100%;text-align:center;}
-
+#hardwoodCollapse{width:310px !important;}
+#hardwood{width:300px !important;}
 #hwDropDown{width:100%;}
 
 #heightAgeCurve{margin:5px;}
@@ -29,13 +30,11 @@ input:disabled {
 
 #ffTable{font-size:.9em;}
 
-#dialogTable1 td{padding:5px;font-size:.6em;}
 #thinningContainer{width:100%;}
 #thinningContainer-select{width:75%;}
 #selectList{cursor:pointer;width:250px;-webkit-appearance:listbox;}
 #thinningContainer-buttons{text-align:center;}
-
-#formButtons{width:40%;text-align:center;}
+#dialogTable1 td{padding:5px;font-size:.6em;}
 #loadDialog-Select{cursor:pointer;width:294px;-webkit-appearance:listbox;}
 #saveDialog{min-height:0px !important;}
 #owDialog{min-height:0px !important;}
@@ -44,12 +43,23 @@ input:disabled {
 #loadDialog-Manage{display:inline;position:absolute;right:3px;bottom:3px;}
 
 
+#formButtons{width:40%;text-align:center;}
+
+.collapseContainers{
+	min-width:320px;
+	display:inline-table;
+	margin-left:auto !important;
+	margin-right:auto !important;
+}
 
 .collapse {
 	text-align:center;
 	background-color:black;
 	color:white;
 	font-size:18px;
+	width:100%;
+	max-width:320px;
+	display:inline-block;
 	border-top:1px solid white;
 	cursor:pointer;
 	padding-top:10px;
@@ -58,8 +68,11 @@ input:disabled {
 
 .boxed {
 	background-color:lightgrey;
-	padding:5px;
+	padding:4px;
+	max-width:310px;
+	border:1px solid black;
 	display:none;
+	
 	font-size:.75em;
 }
 
@@ -79,7 +92,7 @@ input:disabled {
 	font-size:.75em;
 	padding:5px;
 	max-width:50px;
-	min-width:40px;
+	min-width:39px;
 	text-align:center;
 	cursor:pointer;
 }
