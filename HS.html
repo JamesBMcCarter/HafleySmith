@@ -430,19 +430,40 @@
 				return runOutput;
 			} //end save string format
 			//END toString function
-			
+
 			//START RUN FUNCTION
+			function createMatrix(outputString){
+				ca = outputString.split("^");
+				arrayHeight = (ca[19]-ca[18])/ca[20];
+				matrix = new Array([])
+				for(x=0;x<arrayHeight;x++){
+					matrix[x][0] = ca[18]+(ca[20]*x);
+					for(y=1;y<11;y++){
+						matrix[x][y] = 0;
+					}
+				}
+				return matrix;
+			};
+			function createTableRows(matrix){
+				matrixHeight = (ca[19]-ca[18])/ca[20];
+				matrixString = "";
+				for(x=0;x<matrixHeight;x++){
+					matrixString = matrixString + "<tr><td>"+matrix[x][0]+"</td><td>"+matrix[x][1]+"</td><td>"+matrix[x][2]+"</td><td>"+matrix[x][3]+"</td><td>"+matrix[x][4]+"</td><td>"+matrix[x][5]+"</td><td>"+matrix[x][6]+"</td><td>"+matrix[x][7]+"</td><td>"+matrix[x][8]+"</td><td>"+matrix[x][9]+"</td><td>"+matrix[x][10]+"</td></tr>"
+				}
+				return matrixString;
+			}
 			$("#run").click(function(){ //start run button
 				var outputString = toStringOutput();
 				ca = outputString.split('^');
+				matrix = createMatrix(outputString);
 				var resultsWindow = window.open("", "_blank", "width=660,height=400");
 				resultsWindow.document.write("<title>Results</title><style>td{padding:2px;} #labels td{border-bottom:1px solid;} #end td{border-top:1px solid;}</style><div style='text-align:center'><p><h2>NCSU PLANTATION MANAGEMENT SIMULATOR</h2></p><h2>YIELD TABLE ("+ca[0]+")</h2><p></p></div>"+
-				"<table style='text-align:center;margin-left:auto;margin-right:auto;'><tr><td>SITE INDEX<br>(BASE AGE "+ca[9]+")</td><td>PLANTING DENSITY<br>(STEMS/ACRE)</td><td>PERCENT PLANTING<br>SURVIVAL</td><td>INITIAL SURVIVAL<br>(STEMS/ACRE)</td></tr><tr><td>"+ca[10]+"</td><td>"+ca[2]+"</td><td>"+ca[5]+"</td><td>595</td></tr></table>"+
+				"<table style='text-align:center;margin-left:auto;margin-right:auto;'><tr><td>SITE INDEX<br>(BASE AGE "+ca[9]+")</td><td>PLANTING DENSITY<br>(STEMS/ACRE)</td><td>PERCENT PLANTING<br>SURVIVAL</td><td>INITIAL SURVIVAL<br>(STEMS/ACRE)</td></tr><tr><td>"+ca[10]+"</td><td>"+ca[2]+"</td><td>"+ca[5]+"</td><td>"+Math.round(ca[2]*(ca[5]/100))+"</td></tr></table>"+
 				"<table style='text-align:center;margin-left:auto;margin-right:auto;'>"+
 				"<tr><td></td><td>DOM</td><td></td><td>AVE</td><td>AVE</td><td colspan='2'>BASAL AREA</td><td colspan='2'>TOTAL VOLUME</td><td colspan='2'>PINE</td></tr>"+
 				"<tr><td>AGE</td><td>HGT</td><td>TPA</td><td>DIA</td><td>HGT</td><td>PINE</td><td>HDWD</td><td>PINE</td><td>HDWD</td><td>MAI</td><td>PAI</td></tr>"+
 				"<tr id='labels'><td>(yrs)</td><td>(ft)</td><td></td><td>(in)</td><td>(ft)</td><td colspan='2'>(sq ft)</td><td colspan='2'>(cu ft - ib)</td><td></td><td></td></tr>"+
-				"<tr><td>11</td><td>22</td><td>33</td><td>44</td><td>55</td><td>66</td><td>77</td><td>88</td><td>99</td><td>1010</td><td>1111</td></tr>"+
+				"<tr><td>"+matrix[0][0]+"</td></tr>"+
 				"<tr id='end'><td></td><td></td><td></td><td></td><td></td><td colspan='2'></td><td colspan='2'></td><td></td><td></td></tr></table><p style='text-align:center'>NOTE: HEIGHT/AGE CURVE - <span style='text-transform:uppercase'>"+ca[11]+"</span></p>"
 				);
 			}); // end run button
@@ -698,13 +719,33 @@
 				checkEnabledThinning();
 			} //end reset form
 			
-			//clear disabled textboxes
+			//START TEXT BOX HANDLERS
 			$("select").change(function() { //start clear disabled textboxes
 				if($("input[type='text']").is(':disabled')){
 					$("input:disabled").val("");
 				}
 			}); //end clear disabled textboxes
-			//end clear disabled function
+			
+			$("input[pattern='[0-9]*']").keydown(function (e) { //start text validation
+				// Allow: backspace, delete, tab, escape, enter and .
+				if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+					 // Allow: Ctrl+A
+					(e.keyCode == 65 && e.ctrlKey === true) ||
+					 // Allow: Ctrl+C
+					(e.keyCode == 67 && e.ctrlKey === true) ||
+					 // Allow: Ctrl+X
+					(e.keyCode == 88 && e.ctrlKey === true) ||
+					 // Allow: home, end, left, right
+					(e.keyCode >= 35 && e.keyCode <= 39)) {
+						 // let it happen, don't do anything
+						 return;
+				}
+				// Ensure that it is a number and stop the keypress
+				if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+					e.preventDefault();
+				}
+			}); //end text validation
+			//END TEXT BOX HANDLERS
 			
 			$("#reset").click(function(){ //start reset button
 				reset();
@@ -739,10 +780,10 @@
 				<br>
 				<table id="icTBTable">
 					<tr>
-						<div class="formTextBox">TPA:<br><input type="text" name="tpa" size="5" id="tpaTB"></div>
-						<div class="formTextBox">Age:<br><input type="text" name="age" size="5" id="ageTB" disabled></div>
-						<div class="formTextBox"><span id="icVariable">Size</span>:<br><input type="text" name="size" size="5" id="sizeTB" disabled></div>
-						<div class="formTextBox">Survival:<br><input type="text" name="survival" size="5" id="survTB"></div>
+						<div class="formTextBox">TPA:<br><input type="text" pattern="[0-9]*" name="tpa" size="5" id="tpaTB"></div>
+						<div class="formTextBox">Age:<br><input type="text" pattern="[0-9]*" name="age" size="5" id="ageTB" disabled></div>
+						<div class="formTextBox"><span id="icVariable">Size</span>:<br><input type="text" pattern="[0-9]*" name="size" size="5" id="sizeTB" disabled></div>
+						<div class="formTextBox">Survival:<br><input type="text" pattern="[0-9]*" name="survival" size="5" id="survTB"></div>
 					</tr>
 				</table>
 				<div id="hwContainer" class="collapseContainers">
@@ -756,8 +797,8 @@
 					</select>
 					<table id="hwTBTable">
 						<tr>
-							<td class="hwTD">% total BA<br><input type="text" name="%totalBA" size="10" id="totalBATB" disabled></td>
-							<td class="hwTD">At Age:<br><input type="text" name="atAge" size="10" id="atAgeTB" disabled></td>
+							<td class="hwTD">% total BA<br><input type="text" pattern="[0-9]*" name="%totalBA" size="10" id="totalBATB" disabled></td>
+							<td class="hwTD">At Age:<br><input type="text" pattern="[0-9]*" name="atAge" size="10" id="atAgeTB" disabled></td>
 						</tr>
 					</table>
 				</div><!-- END hardwood -->
@@ -771,7 +812,7 @@
 				<input type="radio" name="baseAge" value="50" id="BA50">Base Age 50
 				<br>
 				<br>
-				Site Index Value: <input type="text" name="siteIndexValue" id="siteIndexValue" size="10">
+				Site Index Value: <input type="text" pattern="[0-9]*" name="siteIndexValue" id="siteIndexValue" size="10">
 				<br>
 				<div id="heightAgeCurve">
 					Height/Age Curve:
@@ -796,9 +837,9 @@
 					</tr>
 					<tr>
 						<td><div class="button" id="viewMap" onclick="window.open('http://i.imgur.com/W140xwC.png', 'MsgWindow', 'width=640, height=400');">View Map</div></td>
-						<td><input type="text" name="infection%" id="infection" size="6"></td>
-						<td><input type="text" name="atAge" id="ffatAgeTB" size="6"></td>
-						<td><input type="text" name="hazardRating" id="hazardRating" size="6"></td>
+						<td><input type="text" pattern="[0-9]*" name="infection%" id="infection" size="6"></td>
+						<td><input type="text" pattern="[0-9]*" name="atAge" id="ffatAgeTB" size="6"></td>
+						<td><input type="text" pattern="[0-9]*" name="hazardRating" id="hazardRating" size="6"></td>
 					</tr>
 				</table>
 			</div>
@@ -812,7 +853,7 @@
 				<div id="thinningDialog" title="Add Thinning">
 					<table id="dialogTable1">
 						<tr>
-							<td>Thin at Age<br><input type="text" name="thinAtAge" id="thinAtAge" size="5"></td>
+							<td>Thin at Age<br><input type="text" pattern="[0-9]*" name="thinAtAge" id="thinAtAge" size="5"></td>
 							<td>
 								Thin to residual
 								<br>
@@ -826,7 +867,7 @@
 								<br>
 								Leave
 								<br>
-								<input type="text" name="leaveTB" id="leaveTB" size="5">
+								<input type="text" pattern="[0-9]*" name="leaveTB" id="leaveTB" size="5">
 								<br>
 								TPA
 							</td>
@@ -869,17 +910,17 @@
 						<td>
 							Start
 							<br>
-							<input type="text" name="start" id="start" size="5">
+							<input type="text" pattern="[0-9]*" name="start" id="start" size="5">
 						</td>
 						<td>
 							End
 							<br>
-							<input type="text" name="end" id="end" size="5">
+							<input type="text" pattern="[0-9]*" name="end" id="end" size="5">
 						</td>
 						<td>
 							Interval
 							<br>
-							<input type="text" name="interval" id="interval" size="5">
+							<input type="text" pattern="[0-9]*" name="interval" id="interval" size="5">
 						</td>
 					</tr>
 				</table>
