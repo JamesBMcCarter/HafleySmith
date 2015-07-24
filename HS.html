@@ -339,14 +339,15 @@
 			
 			function collectThinnings() { //start thinning save collection
 				var thinningsArray = document.getElementById("selectList").options;
-				for(i=0;i<thinningsArray.length;i++){
-					thinningsString = thinningsString + "^" + thinningsArray[i].text;
-					
-				}
+				thinningsString = "";
 				if (thinningsArray.length == 0){
-					return "none";
+					return "";
+				}else{
+					for(i=0;i<thinningsArray.length;i++){
+						thinningsString = thinningsString + "^" + thinningsArray[i].text;
+					}
+					return thinningsString;
 				}
-				return thinningsString;
 			} //end thinning save collection
 			
 			$("#thinningDialog").dialog({ //Dialog initialization
@@ -425,7 +426,7 @@
 					+$("#outputVariable").text()+"^"
 					+checkTB($("#start").val())+"^"
 					+checkTB($("#end").val())+"^"
-					+checkTB($("#interval").val()) + "^"
+					+checkTB($("#interval").val()) + ""
 					+collectThinnings()
 				return runOutput;
 			} //end save string format
@@ -444,8 +445,54 @@
 				return arr;
 			}
 			
+			function outputThinningsArray(outputStringArray){
+				osa = outputStringArray;
+				thinningsArray = createArray((osa.length - 21), 3);
+				if(osa.length >= 22){
+					alert("length greater")
+					for(x=21;x<osa.length;x++){
+						ta = osa[x].split(" - ");
+						thinningsArray[x] = ta;
+						alert("thinning age: " + thinningsArray[x][0]);
+					}
+					alert(thinningArray);
+					return thinningsArray;
+				}else{
+					return "none";
+				}
+			}
+			
+			function checkOutputThinnings(thinningsArray, outputArray, age){
+				alert(toStringOutput());
+				arrayString = "<tr><td>"+outputArray[age][0]+"</td><td>"+outputArray[age][1]+"</td><td>"+outputArray[age][2]+"</td><td>"+outputArray[age][3]+"</td><td>"+outputArray[age][4]+"</td><td>"+outputArray[age][5]+"</td><td>"+outputArray[age][6]+"</td><td>"+outputArray[age][7]+"</td><td>"+outputArray[age][8]+"</td><td>"+outputArray[age][9]+"</td><td>"+outputArray[age][10]+"</td></tr>";
+				if(thinningsArray != "none"){
+					for(x=0;x<(thinningsArray.length/3);x++){
+						if(thinningsArray[x][0] < outputArray[0][0]){
+							alert("First true");
+							arrayString = "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>" + arrayString;
+						}else if(thinningsArray[x][0] == outputArray[age][0]){
+							alert("second true");
+							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
+						}else if(thinningsArray[x][0] > outputArray[x][0] && thinningsArray[x][0] < outputArray[(x+1)][0]){
+							alert("third true");
+							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
+						}else if(thinningsArray[x][0] < outputArray[(outputArray.length - 1)][0]){
+							alert("Fourth true");
+							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
+						}else{
+							alert("all false" + thinningsArray[x][0] + " " + outputArray[x][0]);
+							return arrayString;
+						}
+					}
+				}else{
+					return arrayString;
+				}
+			}
+			
 			function createTableRows(outputString){ //creates html string for output
 				var ca = outputString.split('^');
+				var ta = outputThinningsArray(ca);
+				alert(ta);
 				var arrayHeight = parseInt((ca[19]-ca[18])/ca[20]) + 1;
 				var arrayStart = parseInt(ca[18] - ca[20]);
 				outputArray = createArray(arrayHeight, 11);
@@ -458,7 +505,8 @@
 				}
 				arrayString = "";
 				for(var x=0;x<arrayHeight;x++){
-					arrayString = arrayString + "<tr><td>"+outputArray[x][0]+"</td><td>"+outputArray[x][1]+"</td><td>"+outputArray[x][2]+"</td><td>"+outputArray[x][3]+"</td><td>"+outputArray[x][4]+"</td><td>"+outputArray[x][5]+"</td><td>"+outputArray[x][6]+"</td><td>"+outputArray[x][7]+"</td><td>"+outputArray[x][8]+"</td><td>"+outputArray[x][9]+"</td><td>"+outputArray[x][10]+"</td></tr>";
+					age = x;
+					arrayString = arrayString + checkOutputThinnings(ta, outputArray, age);
 				}
 				return arrayString;
 			}
@@ -506,6 +554,7 @@
 					localStorage.setItem($("#saveName").val(), toStringOutput());
 					$("#saveName").val("");
 					$("#saveDialog").dialog("close");
+					alert(toStringOutput());
 				}
 			});//end of Save button function
 			
@@ -763,6 +812,9 @@
 				reset();
 			}); //end reset button
 			//END RESET
+			$("#help").click(function(){ //start reset button
+				alert(toStringOutput().split("^")[21]);
+			}); //end reset button
 		});
 	</script>
 </head>
