@@ -425,37 +425,49 @@
 					+$("#outputVariable").text()+"^"
 					+checkTB($("#start").val())+"^"
 					+checkTB($("#end").val())+"^"
-					+checkTB($("#interval").val())
+					+checkTB($("#interval").val()) + "^"
 					+collectThinnings()
 				return runOutput;
 			} //end save string format
 			//END toString function
 
 			//START RUN FUNCTION
-			function createMatrix(outputString){
-				ca = outputString.split("^");
-				arrayHeight = (ca[19]-ca[18])/ca[20];
-				matrix = new Array([])
-				for(x=0;x<arrayHeight;x++){
-					matrix[x][0] = ca[18]+(ca[20]*x);
-					for(y=1;y<11;y++){
-						matrix[x][y] = 0;
+			function createArray(length) { //creates multidimentional array
+				var arr = new Array(length || 0),
+					i = length;
+
+				if (arguments.length > 1) {
+					var args = Array.prototype.slice.call(arguments, 1);
+					while(i--) arr[length-1 - i] = createArray.apply(this, args);
+				}
+
+				return arr;
+			}
+			
+			function createTableRows(outputString){ //creates html string for output
+				var ca = outputString.split('^');
+				var arrayHeight = parseInt((ca[19]-ca[18])/ca[20]) + 1;
+				var arrayStart = parseInt(ca[18] - ca[20]);
+				outputArray = createArray(arrayHeight, 11);
+				for(var x=0, length = arrayHeight;x<length;x++){
+					outputArray[x][0] = arrayStart + parseInt(ca[20]);
+					arrayStart = arrayStart + parseInt(ca[20]);
+					for(var y=1;y<11;y++){
+						outputArray[x][y] = 0;
 					}
 				}
-				return matrix;
-			};
-			function createTableRows(matrix){
-				matrixHeight = (ca[19]-ca[18])/ca[20];
-				matrixString = "";
-				for(x=0;x<matrixHeight;x++){
-					matrixString = matrixString + "<tr><td>"+matrix[x][0]+"</td><td>"+matrix[x][1]+"</td><td>"+matrix[x][2]+"</td><td>"+matrix[x][3]+"</td><td>"+matrix[x][4]+"</td><td>"+matrix[x][5]+"</td><td>"+matrix[x][6]+"</td><td>"+matrix[x][7]+"</td><td>"+matrix[x][8]+"</td><td>"+matrix[x][9]+"</td><td>"+matrix[x][10]+"</td></tr>"
+				arrayString = "";
+				for(var x=0;x<arrayHeight;x++){
+					arrayString = arrayString + "<tr><td>"+outputArray[x][0]+"</td><td>"+outputArray[x][1]+"</td><td>"+outputArray[x][2]+"</td><td>"+outputArray[x][3]+"</td><td>"+outputArray[x][4]+"</td><td>"+outputArray[x][5]+"</td><td>"+outputArray[x][6]+"</td><td>"+outputArray[x][7]+"</td><td>"+outputArray[x][8]+"</td><td>"+outputArray[x][9]+"</td><td>"+outputArray[x][10]+"</td></tr>";
 				}
-				return matrixString;
+				return arrayString;
 			}
+			
 			$("#run").click(function(){ //start run button
 				var outputString = toStringOutput();
 				ca = outputString.split('^');
-				matrix = createMatrix(outputString);
+				matrixArray = createTableRows(outputString);
+				var arrayHeight = parseInt((ca[19]-ca[18])/ca[20]);
 				var resultsWindow = window.open("", "_blank", "width=660,height=400");
 				resultsWindow.document.write("<title>Results</title><style>td{padding:2px;} #labels td{border-bottom:1px solid;} #end td{border-top:1px solid;}</style><div style='text-align:center'><p><h2>NCSU PLANTATION MANAGEMENT SIMULATOR</h2></p><h2>YIELD TABLE ("+ca[0]+")</h2><p></p></div>"+
 				"<table style='text-align:center;margin-left:auto;margin-right:auto;'><tr><td>SITE INDEX<br>(BASE AGE "+ca[9]+")</td><td>PLANTING DENSITY<br>(STEMS/ACRE)</td><td>PERCENT PLANTING<br>SURVIVAL</td><td>INITIAL SURVIVAL<br>(STEMS/ACRE)</td></tr><tr><td>"+ca[10]+"</td><td>"+ca[2]+"</td><td>"+ca[5]+"</td><td>"+Math.round(ca[2]*(ca[5]/100))+"</td></tr></table>"+
@@ -463,7 +475,7 @@
 				"<tr><td></td><td>DOM</td><td></td><td>AVE</td><td>AVE</td><td colspan='2'>BASAL AREA</td><td colspan='2'>TOTAL VOLUME</td><td colspan='2'>PINE</td></tr>"+
 				"<tr><td>AGE</td><td>HGT</td><td>TPA</td><td>DIA</td><td>HGT</td><td>PINE</td><td>HDWD</td><td>PINE</td><td>HDWD</td><td>MAI</td><td>PAI</td></tr>"+
 				"<tr id='labels'><td>(yrs)</td><td>(ft)</td><td></td><td>(in)</td><td>(ft)</td><td colspan='2'>(sq ft)</td><td colspan='2'>(cu ft - ib)</td><td></td><td></td></tr>"+
-				"<tr><td>"+matrix[0][0]+"</td></tr>"+
+				"<tr><td>"+matrixArray+"</td></tr>"+
 				"<tr id='end'><td></td><td></td><td></td><td></td><td></td><td colspan='2'></td><td colspan='2'></td><td></td><td></td></tr></table><p style='text-align:center'>NOTE: HEIGHT/AGE CURVE - <span style='text-transform:uppercase'>"+ca[11]+"</span></p>"
 				);
 			}); // end run button
