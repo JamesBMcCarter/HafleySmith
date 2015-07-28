@@ -52,6 +52,7 @@
 		#saveDialog{min-height:0px !important;}
 		#owDialog{min-height:0px !important;}
 		#clearDialog{min-height:0px !important;}
+		#configDialog{min-height:0px !important;}
 		#loadDialog{min-height:0px !important;}
 		#loadDialog-Manage{display:inline;position:absolute;right:3px;bottom:3px;}
 		
@@ -447,43 +448,49 @@
 			
 			function outputThinningsArray(outputStringArray){
 				osa = outputStringArray;
-				thinningsArray = createArray((osa.length - 21), 3);
+				index = osa.length - 21;
+				tArray = createArray(index, 3);
 				if(osa.length >= 22){
-					alert("length greater")
-					for(x=21;x<osa.length;x++){
+					y = 0;
+					for(x=21;x<21+index;x++){
 						ta = osa[x].split(" - ");
-						thinningsArray[x] = ta;
-						alert("thinning age: " + thinningsArray[x][0]);
+						tArray[y] = ta
+						y++;
 					}
-					alert(thinningArray);
-					return thinningsArray;
+					tArray.sort(sortFunction);
+
+					function sortFunction(a, b) {
+						if (parseInt(a[0]) === parseInt(b[0])) {
+							return 0;
+						}
+						else {
+							return (parseInt(a[0]) < parseInt(b[0])) ? -1 : 1;
+						}
+					}
+					alert(tArray);
+					return tArray;
 				}else{
 					return "none";
 				}
 			}
 			
 			function checkOutputThinnings(thinningsArray, outputArray, age){
-				alert(toStringOutput());
 				arrayString = "<tr><td>"+outputArray[age][0]+"</td><td>"+outputArray[age][1]+"</td><td>"+outputArray[age][2]+"</td><td>"+outputArray[age][3]+"</td><td>"+outputArray[age][4]+"</td><td>"+outputArray[age][5]+"</td><td>"+outputArray[age][6]+"</td><td>"+outputArray[age][7]+"</td><td>"+outputArray[age][8]+"</td><td>"+outputArray[age][9]+"</td><td>"+outputArray[age][10]+"</td></tr>";
 				if(thinningsArray != "none"){
-					for(x=0;x<(thinningsArray.length/3);x++){
-						if(thinningsArray[x][0] < outputArray[0][0]){
-							alert("First true");
-							arrayString = "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>" + arrayString;
+					for(x=0;x<thinningsArray.length;x++){
+						if(thinningsArray[x][0] < outputArray[0][0] && outputArray[age][0] == outputArray[0][0]){
+							arrayString = "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>" + arrayString;
 						}else if(thinningsArray[x][0] == outputArray[age][0]){
-							alert("second true");
-							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
-						}else if(thinningsArray[x][0] > outputArray[x][0] && thinningsArray[x][0] < outputArray[(x+1)][0]){
-							alert("third true");
-							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
-						}else if(thinningsArray[x][0] < outputArray[(outputArray.length - 1)][0]){
-							alert("Fourth true");
-							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+"TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
+							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
+						}else if(thinningsArray[x][0] > outputArray[outputArray.length - 1][0] && age == (outputArray.length - 1)){
+							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
+						}else if(thinningsArray[x][0] > outputArray[age][0] && thinningsArray[x][0] < outputArray[(age+1)][0]){
+							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
 						}else{
-							alert("all false" + thinningsArray[x][0] + " " + outputArray[x][0]);
-							return arrayString;
+						
 						}
 					}
+					return arrayString;
 				}else{
 					return arrayString;
 				}
@@ -492,7 +499,6 @@
 			function createTableRows(outputString){ //creates html string for output
 				var ca = outputString.split('^');
 				var ta = outputThinningsArray(ca);
-				alert(ta);
 				var arrayHeight = parseInt((ca[19]-ca[18])/ca[20]) + 1;
 				var arrayStart = parseInt(ca[18] - ca[20]);
 				outputArray = createArray(arrayHeight, 11);
@@ -523,7 +529,7 @@
 				"<tr><td></td><td>DOM</td><td></td><td>AVE</td><td>AVE</td><td colspan='2'>BASAL AREA</td><td colspan='2'>TOTAL VOLUME</td><td colspan='2'>PINE</td></tr>"+
 				"<tr><td>AGE</td><td>HGT</td><td>TPA</td><td>DIA</td><td>HGT</td><td>PINE</td><td>HDWD</td><td>PINE</td><td>HDWD</td><td>MAI</td><td>PAI</td></tr>"+
 				"<tr id='labels'><td>(yrs)</td><td>(ft)</td><td></td><td>(in)</td><td>(ft)</td><td colspan='2'>(sq ft)</td><td colspan='2'>(cu ft - ib)</td><td></td><td></td></tr>"+
-				"<tr><td>"+matrixArray+"</td></tr>"+
+				matrixArray+
 				"<tr id='end'><td></td><td></td><td></td><td></td><td></td><td colspan='2'></td><td colspan='2'></td><td></td><td></td></tr></table><p style='text-align:center'>NOTE: HEIGHT/AGE CURVE - <span style='text-transform:uppercase'>"+ca[11]+"</span></p>"
 				);
 			}); // end run button
@@ -552,6 +558,11 @@
 					owError($("#saveName").val());
 				}else{
 					localStorage.setItem($("#saveName").val(), toStringOutput());
+					if(checkSave() == true){
+						localStorage.setItem('saves', $('#saveName').val());
+					}else{
+						localStorage.setItem('saves', localStorage.getItem('saves') + "," + $("#saveName").val());
+					}
 					$("#saveName").val("");
 					$("#saveDialog").dialog("close");
 					alert(toStringOutput());
@@ -577,6 +588,11 @@
 			
 			$("#owDialog-Yes").click(function(){ //start overwrite yes/no buttons
 					localStorage.setItem($("#saveName").val(), toStringOutput());
+					if(checkSave() == true){
+						localStorage.setItem('saves', $('#saveName').val());
+					}else{
+						localStorage.setItem('saves', localStorage.getItem('saves') + "," + $("#saveName").val());
+					}
 					$("#saveDialog").dialog("close");
 					$("#owDialog").dialog("close");
 				});
@@ -663,6 +679,13 @@
 					thinningsCounter = 0;
 					$("#loadDialog").dialog("close");
 				}else{
+					saves = localStorage.getItem('saves');
+					listItem = $("#loadDialog-Select option:selected").text()+',';
+					if(saves.indexOf(listItem) == -1){
+						localStorage.setItem('saves', saves.replace($("#loadDialog-Select option:selected").text(), ''));
+					}else{
+						localStorage.setItem('saves', saves.replace(listItem, ''));
+					}
 					localStorage.removeItem($("#loadDialog-Select option:selected").text());
 					$("#loadDialog-Select option:selected").remove();
 				}
@@ -695,7 +718,11 @@
 			}); //end of Dialog initialization
 			
 			$("#clearDialog-Yes").click(function(){ //start clear saves dialog yes button
-				localStorage.clear();
+				saveArray = localStorage.getItem('saves').split(',');
+				for(x=0;x<saveArray.length;x++){
+					localStorage.removeItem(saveArray[x]);
+				}
+				localStorage.removeItem('saves');
 				resetLoadSelect();
 				$("#clearDialog").dialog("close");
 			}); //end clear saves dialog yes button
@@ -718,8 +745,11 @@
 			}//end load dialog reset
 			
 			$("#load").click(function(){//start load dialog opener function
-				for(i=0;i<localStorage.length;i++){
-					$('#loadDialog-Select').append("<option value='"+i+"'>"+localStorage.key(i)+"</option>");
+				if(localStorage.getItem('saves') != null){
+					saveArray = localStorage.getItem('saves').split(',');
+					for(i=0;i<saveArray.length;i++){
+						$('#loadDialog-Select').append("<option value='"+i+"'>"+saveArray[i]+"</option>");
+					}
 				}
 				$("#loadDialog").dialog('open');
 			});//end load dialog opener function
@@ -729,8 +759,8 @@
 			function getSave(cname) { //start getting local save information
 				return localStorage.getItem(cname);
 			} //end getting local save information
-			function checkSave(cname) { //start check for local save
-				if (cname!=null) {
+			function checkSave() { //start check for local save
+				if (localStorage.getItem('saves') == null) {
 					return true;
 				}else{
 					return false;
@@ -738,12 +768,14 @@
 			} //end check for local save
 			
 			function checkSaveName(name){ //start check save
-				var strg = localStorage.length
-				for(i=0;i<strg;i++){
-					if(localStorage.key(i) == name){
-						return true;
-					}else{
-						return false;
+				if(localStorage.getItem('saves') != null){
+					var strg = localStorage.key('saves').split(',').length;
+					for(i=0;i<strg;i++){
+						if(localStorage.key(i) == name){
+							return true;
+						}else{
+							return false;
+						}
 					}
 				}
 			} //end check save
@@ -754,16 +786,16 @@
 				$("#loblollyPine").prop('checked', true);
 				$("#whitePine").prop('checked', false);
 				$("#icDropDown").val("0");
-				$('#tpaTB').val("");
+				$('#tpaTB').val("700");
 				$("#ageTB").val("");
 				$("#sizeTB").val("");
-				$("#survTB").val("");
+				$("#survTB").val("85");
 				$("#hwDropDown").val("0");
 				$("#totalBATB").val("");
 				$("#atAgeTB").val("");
 				$("#BA25").prop('checked', true);
 				$("#BA50").prop('checked', false);
-				$("#siteIndexValue").val("");
+				$("#siteIndexValue").val("65");
 				$("#heightAgeSelect").val("piedmont/upland");
 				$("#enableFusiform").prop('checked', false);
 				$("#infection").val("");
@@ -771,9 +803,9 @@
 				$("#hazardRating").val("");
 				$("#enableThinnings").prop('checked', false);
 				$("#outputVariable").text("HTML");
-				$("#start").val("");
-				$("#end").val("");
-				$("#interval").val("");
+				$("#start").val("5");
+				$("#end").val("35");
+				$("#interval").val("5");
 				$("#thinningContainer-select").html("<select name='selectList' id='selectList' multiple></select>");
 				thinningsCounter = 0;
 				checkEnabledFF();
@@ -813,8 +845,31 @@
 			}); //end reset button
 			//END RESET
 			$("#help").click(function(){ //start reset button
-				alert(toStringOutput().split("^")[21]);
 			}); //end reset button
+			
+			$("#config").click(function(){ //start config button
+				$("#configDialog").dialog('open');
+			}); //end config button
+			
+			$("#configDialog-Save").click(function(){ //start config button
+				settings = $("#geolocation").is(':checked');
+				localStorage.setItem("userConfigSettings", settings);
+			}); //end config button
+			
+			$("#configDialog-Cancel").click(function(){ //start config button
+				$("#configDialog").dialog('close');
+			}); //end config button
+			
+			$("#configDialog").dialog({ //Dialog initialization
+					modal:true,
+					draggable:false,
+					resizeable:false,
+					position:{ my: "center center", at: "center center", of: "#main" },
+					show: 'blind',
+					hide: 'blind',
+					width: 300,
+					autoOpen:false,
+			}); //end of Dialog initialization
 		});
 	</script>
 </head>
@@ -1036,6 +1091,15 @@
 					</tr>
 				</table>
 			</div><!-- END clearDialog -->
+			<div id="configDialog" title="Configuration"><!-- START configDialog -->
+				Geolocation: <input type="checkbox" name="geolocation" id="geolocation">
+				<table>
+					<tr>
+						<td><div class="button" id="configDialog-Save">Save</div></td>
+						<td><div class="button" id="configDialog-Cancel">Cancel</div></td>
+					</tr>
+				</table>
+			</div><!-- END configDialog -->
 			<div id="btContainer" class="collapseContainers">
 			<table id="formButtons">
 				<tr>
