@@ -41,12 +41,14 @@
 		
 		#ffTable{font-size:.9em;}
 		
+		#thinningDialog{min-height:0px !important;}
 		#dialogTable1 td{padding:5px;font-size:.6em;}
 		#thinningContainer{width:100%;}
 		#thinningContainer-select{width:75%;}
 		#selectList{cursor:pointer;width:250px;-webkit-appearance:listbox;}
 		#thinningContainer-buttons{text-align:center;}
 		
+		#btContainer{position:relative;top:6px;}
 		#formButtons{width:40%;text-align:center;}
 		#loadDialog-Select{cursor:pointer;width:294px;-webkit-appearance:listbox;}
 		#saveDialog{min-height:0px !important;}
@@ -213,26 +215,36 @@
 			//START FORM SIZE SNAPPING
 			if($(window).width()<645){
 					$("#main").css("max-width", 320);
+					$("#btContainer").css("top", 0);
 				}else if($(window).width()<969){
 					$("#main").css("max-width", 645);
+					$("#btContainer").css("top", 6);
 				}else if($(window).width()<1294){
 					$("#main").css("max-width", 969);
+					$("#btContainer").css("top", 6);
 				}else if($(window).width()<1620){
-					$("#main").css("max-width", 1294);
+					$("#main").css("max-width", 969);
+					$("#btContainer").css("top", 6);
 				}else{
-					$("#main").css("max-width", 1620);
+					$("#main").css("max-width", 969);
+					$("#btContainer").css("top", 6);
 			}
 			$(window).resize(function () {
 				if($(window).width()<645){
 					$("#main").css("max-width", 320);
+					$("#btContainer").css("top", 0);
 				}else if($(window).width()<969){
 					$("#main").css("max-width", 645);
+					$("#btContainer").css("top", 6);
 				}else if($(window).width()<1294){
 					$("#main").css("max-width", 969);
+					$("#btContainer").css("top", 6);
 				}else if($(window).width()<1620){
-					$("#main").css("max-width", 1294);
+					$("#main").css("max-width", 969);
+					$("#btContainer").css("top", 6);
 				}else{
-					$("#main").css("max-width", 1620);
+					$("#main").css("max-width", 969);
+					$("#btContainer").css("top", 6);
 				}
 			});
 			//END FORM SIZE SNAPPING
@@ -269,6 +281,42 @@
 					$("#survTB").attr("disabled", "disabled");
 				}
 			}); //end of initialConditions textbox function
+			
+			function selectChecks(){
+				if($('#icDropDown').val() == 0){
+					$("#tpaTB").removeAttr("disabled");
+					$("#ageTB").attr("disabled", "disabled");
+					$("#sizeTB").attr("disabled", "disabled");
+					$("#icVariable").text("Size");
+					$("#survTB").removeAttr("disabled");
+				}else if($('#icDropDown').val() == 1){
+					$("#tpaTB").removeAttr("disabled");
+					$("#ageTB").removeAttr("disabled");
+					$("#sizeTB").attr("disabled", "disabled");
+					$("#icVariable").text("Size");
+					$("#survTB").attr("disabled", "disabled");
+				}else if($('#icDropDown').val() == 2){
+					$("#tpaTB").removeAttr("disabled");
+					$("#ageTB").removeAttr("disabled");
+					$("#icVariable").text("BA");
+					$("#sizeTB").removeAttr("disabled");
+					$("#survTB").attr("disabled", "disabled");
+				}else if($('#icDropDown').val() == 3){
+					$("#tpaTB").removeAttr("disabled");
+					$("#ageTB").removeAttr("disabled");
+					$("#icVariable").text("Dq");
+					$("#sizeTB").removeAttr("disabled");
+					$("#survTB").attr("disabled", "disabled");
+				}else if($('#hwDropDown').val() == 0){
+					$("#totalBATB").attr("disabled", "disabled");
+					$("#atAgeTB").attr("disabled", "disabled");
+				}else if($('#hwDropDown').val() == 1){
+					$("#totalBATB").removeAttr("disabled");
+					$("#atAgeTB").removeAttr("disabled");
+				}else{
+					alert("error");
+				}
+			}
 		
 			$("#hardwoodCollapse").click(function(){ //hardwood collapse animation
         		$("#hardwood").slideToggle("slow");
@@ -369,11 +417,15 @@
 			}); //end of Add button function
 
 			$('#dialogOK').click(function(){ //OK button function
-				$('#selectList').append("<option value='"+thinningsCounter+"'>"+$('#thinAtAge').val()+" - "+$('#dialogSelect option:selected').text()+" - "+$('#leaveTB').val()+"</option>");
-				$("#thinningDialog").dialog("close");
-				$('#thinAtAge').val("");
-				$('#dialogSelect').val("1");
-				$('#leaveTB').val("");
+				if(checkThinningTB() == false){
+					$('#selectList').append("<option value='"+thinningsCounter+"'>"+$('#thinAtAge').val()+" - "+$('#dialogSelect option:selected').text()+" - "+$('#leaveTB').val()+"</option>");
+					$("#thinningDialog").dialog("close");
+					$('#thinAtAge').val("");
+					$('#dialogSelect').val("0");
+					$('#leaveTB').val("");
+				}else{
+					alert("Please fill out the boxes with marked borders.");
+				}
 			});//end of OK button function
 
 			$('#dialogCancel').click(function(){ //Cancel button function
@@ -434,7 +486,7 @@
 			//END toString function
 
 			//START RUN FUNCTION
-			function createArray(length) { //creates multidimentional array
+			function createArray(length) { //creates multidimensional array.
 				var arr = new Array(length || 0),
 					i = length;
 
@@ -467,43 +519,51 @@
 							return (parseInt(a[0]) < parseInt(b[0])) ? -1 : 1;
 						}
 					}
-					alert(tArray);
 					return tArray;
 				}else{
 					return "none";
 				}
 			}
 			
-			function checkOutputThinnings(thinningsArray, outputArray, age){
+			function checkOutputThinnings(thinningsArray, outputArray, age, enabled){
 				arrayString = "<tr><td>"+outputArray[age][0]+"</td><td>"+outputArray[age][1]+"</td><td>"+outputArray[age][2]+"</td><td>"+outputArray[age][3]+"</td><td>"+outputArray[age][4]+"</td><td>"+outputArray[age][5]+"</td><td>"+outputArray[age][6]+"</td><td>"+outputArray[age][7]+"</td><td>"+outputArray[age][8]+"</td><td>"+outputArray[age][9]+"</td><td>"+outputArray[age][10]+"</td></tr>";
-				if(thinningsArray != "none"){
-					for(x=0;x<thinningsArray.length;x++){
-						if(thinningsArray[x][0] < outputArray[0][0] && outputArray[age][0] == outputArray[0][0]){
-							arrayString = "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>" + arrayString;
-						}else if(thinningsArray[x][0] == outputArray[age][0]){
-							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
-						}else if(thinningsArray[x][0] > outputArray[outputArray.length - 1][0] && age == (outputArray.length - 1)){
-							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
-						}else if(thinningsArray[x][0] > outputArray[age][0] && thinningsArray[x][0] < outputArray[(age+1)][0]){
-							arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" TREES REMOVED</td><td></td><td>-0</td><td></td><td></td></tr>";
-						}else{
-						
+					if(thinningsArray != "none" && enabled == 'true'){
+						for(x=0;x<thinningsArray.length;x++){
+							if(thinningsArray[x][0] < outputArray[0][0] && outputArray[age][0] == outputArray[0][0]){
+								arrayString = "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" Trees Removed</td><td></td><td>-0</td><td></td><td></td></tr>" + arrayString;
+							}else if(thinningsArray[x][0] == outputArray[age][0]){
+								arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" Trees Removed</td><td></td><td>-0</td><td></td><td></td></tr>";
+							}else if(thinningsArray[x][0] > outputArray[outputArray.length - 1][0] && age == (outputArray.length - 1)){
+								arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>Thinning Error</td><td></td><td>-0</td><td></td><td></td></tr>";
+							}else if(thinningsArray[x][0] > outputArray[age][0] && thinningsArray[x][0] < outputArray[(age+1)][0]){
+								arrayString = arrayString + "<tr><td>"+thinningsArray[x][0]+"</td><td colspan='6'>"+(outputArray[age][2] - thinningsArray[x][2])+" Trees Removed</td><td></td><td>-0</td><td></td><td></td></tr>";
+							}else{
+							
+							}
 						}
+						return arrayString;
+					}else{
+						return arrayString;
 					}
-					return arrayString;
-				}else{
-					return arrayString;
-				}
 			}
 			
 			function createTableRows(outputString){ //creates html string for output
 				var ca = outputString.split('^');
 				var ta = outputThinningsArray(ca);
-				var arrayHeight = parseInt((ca[19]-ca[18])/ca[20]) + 1;
+				if(((ca[19]-ca[18])%ca[20])==0){
+						var remainderVar = 1;
+					}else{
+						var remainderVar = 2;
+					}
+				var arrayHeight = parseInt((ca[19]-ca[18])/ca[20])+remainderVar;
 				var arrayStart = parseInt(ca[18] - ca[20]);
 				outputArray = createArray(arrayHeight, 11);
 				for(var x=0, length = arrayHeight;x<length;x++){
-					outputArray[x][0] = arrayStart + parseInt(ca[20]);
+					if(remainderVar == 2 && x == (length-1)){	
+						outputArray[x][0] = parseInt(ca[19]);
+					}else{
+						outputArray[x][0] = arrayStart + parseInt(ca[20]);
+					}
 					arrayStart = arrayStart + parseInt(ca[20]);
 					for(var y=1;y<11;y++){
 						outputArray[x][y] = 0;
@@ -512,26 +572,29 @@
 				arrayString = "";
 				for(var x=0;x<arrayHeight;x++){
 					age = x;
-					arrayString = arrayString + checkOutputThinnings(ta, outputArray, age);
+					arrayString = arrayString + checkOutputThinnings(ta, outputArray, age, ca[16]);
 				}
 				return arrayString;
 			}
 			
 			$("#run").click(function(){ //start run button
-				var outputString = toStringOutput();
-				ca = outputString.split('^');
-				matrixArray = createTableRows(outputString);
-				var arrayHeight = parseInt((ca[19]-ca[18])/ca[20]);
-				var resultsWindow = window.open("", "_blank", "width=660,height=400");
-				resultsWindow.document.write("<title>Results</title><style>td{padding:2px;} #labels td{border-bottom:1px solid;} #end td{border-top:1px solid;}</style><div style='text-align:center'><p><h2>NCSU PLANTATION MANAGEMENT SIMULATOR</h2></p><h2>YIELD TABLE ("+ca[0]+")</h2><p></p></div>"+
-				"<table style='text-align:center;margin-left:auto;margin-right:auto;'><tr><td>SITE INDEX<br>(BASE AGE "+ca[9]+")</td><td>PLANTING DENSITY<br>(STEMS/ACRE)</td><td>PERCENT PLANTING<br>SURVIVAL</td><td>INITIAL SURVIVAL<br>(STEMS/ACRE)</td></tr><tr><td>"+ca[10]+"</td><td>"+ca[2]+"</td><td>"+ca[5]+"</td><td>"+Math.round(ca[2]*(ca[5]/100))+"</td></tr></table>"+
-				"<table style='text-align:center;margin-left:auto;margin-right:auto;'>"+
-				"<tr><td></td><td>DOM</td><td></td><td>AVE</td><td>AVE</td><td colspan='2'>BASAL AREA</td><td colspan='2'>TOTAL VOLUME</td><td colspan='2'>PINE</td></tr>"+
-				"<tr><td>AGE</td><td>HGT</td><td>TPA</td><td>DIA</td><td>HGT</td><td>PINE</td><td>HDWD</td><td>PINE</td><td>HDWD</td><td>MAI</td><td>PAI</td></tr>"+
-				"<tr id='labels'><td>(yrs)</td><td>(ft)</td><td></td><td>(in)</td><td>(ft)</td><td colspan='2'>(sq ft)</td><td colspan='2'>(cu ft - ib)</td><td></td><td></td></tr>"+
-				matrixArray+
-				"<tr id='end'><td></td><td></td><td></td><td></td><td></td><td colspan='2'></td><td colspan='2'></td><td></td><td></td></tr></table><p style='text-align:center'>NOTE: HEIGHT/AGE CURVE - <span style='text-transform:uppercase'>"+ca[11]+"</span></p>"
-				);
+				if(checkRequired()==false){
+					var outputString = toStringOutput();
+					ca = outputString.split('^');
+					matrixArray = createTableRows(outputString);
+					var resultsWindow = window.open("", "_blank", "width=660,height=400");
+					resultsWindow.document.write("<title>Results</title><style>td{padding:2px;} #labels td{border-bottom:1px solid;} #end td{border-top:1px solid;}</style><div style='text-align:center'><p><h2>NCSU Plantation Management Simulator</h2></p><h2>Yield Table ("+ca[0]+")</h2><p></p></div>"+
+					"<table style='text-align:center;margin-left:auto;margin-right:auto;'><tr><td>Site Index<br>(Base Age "+ca[9]+")</td><td>Planting Density<br>(Stems/Acre)</td><td>Percent Planting<br>Survival</td><td>Initial Survival<br>(Stems/Acre)</td></tr><tr><td>"+ca[10]+"</td><td>"+ca[2]+"</td><td>"+ca[5]+"</td><td>"+Math.round(ca[2]*(ca[5]/100))+"</td></tr></table>"+
+					"<table style='text-align:center;margin-left:auto;margin-right:auto;'>"+
+					"<tr><td></td><td>DOM</td><td></td><td>Ave</td><td>Ave</td><td colspan='2'>Basal Area</td><td colspan='2'>Total Volume</td><td colspan='2'>Pine</td></tr>"+
+					"<tr><td>Age</td><td>Hgt</td><td>TPA</td><td>Dia</td><td>Hgt</td><td>Pine</td><td>Hdwd</td><td>Pine</td><td>Hdwd</td><td>MAI</td><td>PAI</td></tr>"+
+					"<tr id='labels'><td>(yrs)</td><td>(ft)</td><td></td><td>(in)</td><td>(ft)</td><td colspan='2'>(sq ft)</td><td colspan='2'>(cu ft - ib)</td><td></td><td></td></tr>"+
+					matrixArray+
+					"<tr id='end'><td></td><td></td><td></td><td></td><td></td><td colspan='2'></td><td colspan='2'></td><td></td><td></td></tr></table><p style='text-align:center'>NOTE: Height/Age Curve - <span>"+ca[11]+"</span></p>"
+					);
+				}else{
+					alert("Please fill out the boxes with marked borders.");
+				}
 			}); // end run button
 			//END RUN FUNCTION
 			
@@ -554,18 +617,21 @@
 			});//end of Cancel button function
 			
 			$('#saveDialog-Save').click(function(){ //Save button function
-				if(checkSaveName($("#saveName").val())===true){
-					owError($("#saveName").val());
-				}else{
-					localStorage.setItem($("#saveName").val(), toStringOutput());
-					if(checkSave() == true){
-						localStorage.setItem('saves', $('#saveName').val());
+				if(checkSaveTB() == false){
+					if(checkSaveName($("#saveName").val())===true){
+						owError($("#saveName").val());
 					}else{
-						localStorage.setItem('saves', localStorage.getItem('saves') + "," + $("#saveName").val());
+						localStorage.setItem($("#saveName").val(), toStringOutput());
+						if(checkSave() == true){
+							localStorage.setItem('saves', $('#saveName').val());
+						}else{
+							localStorage.setItem('saves', localStorage.getItem('saves') + "," + $("#saveName").val());
+						}
+						$("#saveName").val("");
+						$("#saveDialog").dialog("close");
 					}
-					$("#saveName").val("");
-					$("#saveDialog").dialog("close");
-					alert(toStringOutput());
+				}else{
+					alert("Please fill out the box with the marked border.")
 				}
 			});//end of Save button function
 			
@@ -587,18 +653,14 @@
 			} //end overwrite error dialog handler
 			
 			$("#owDialog-Yes").click(function(){ //start overwrite yes/no buttons
-					localStorage.setItem($("#saveName").val(), toStringOutput());
-					if(checkSave() == true){
-						localStorage.setItem('saves', $('#saveName').val());
-					}else{
-						localStorage.setItem('saves', localStorage.getItem('saves') + "," + $("#saveName").val());
-					}
-					$("#saveDialog").dialog("close");
-					$("#owDialog").dialog("close");
-				});
-				$("#owDialog-No").click(function(){
-					$("#owDialog").dialog("close");
-				}); //end overwrite yes/no buttons
+				localStorage.setItem($("#saveName").val(), toStringOutput());
+				$("#saveDialog").dialog("close");
+				$("#owDialog").dialog("close");
+			});
+			
+			$("#owDialog-No").click(function(){
+				$("#owDialog").dialog("close");
+			}); //end overwrite yes/no buttons
 			//END overwrite function
 			
 			$("#save").click(function(){
@@ -677,6 +739,7 @@
 					checkEnabledThinning();
 					resetLoadSelect();
 					thinningsCounter = 0;
+					selectChecks();
 					$("#loadDialog").dialog("close");
 				}else{
 					saves = localStorage.getItem('saves');
@@ -808,7 +871,17 @@
 				$("#interval").val("5");
 				$("#thinningContainer-select").html("<select name='selectList' id='selectList' multiple></select>");
 				thinningsCounter = 0;
+				$("#tpaTB").removeAttr("disabled");
+				$("#ageTB").attr("disabled", "disabled");
+				$("#sizeTB").attr("disabled", "disabled");
+				$("#icVariable").text("Size");
+				$("#survTB").removeAttr("disabled");
+				$("#totalBATB").attr("disabled", "disabled");
+				$("#atAgeTB").attr("disabled", "disabled");
 				checkEnabledFF();
+				$("#main input:text").each(function(){
+					$(this).css("border-color", "initial");
+				});
 				checkEnabledThinning();
 			} //end reset form
 			
@@ -816,8 +889,13 @@
 			$("select").change(function() { //start clear disabled textboxes
 				if($("input[type='text']").is(':disabled')){
 					$("input:disabled").val("");
+					$("input:disabled").css("border-color", "initial");
 				}
 			}); //end clear disabled textboxes
+			
+			$("input:text").click(function(){
+				$(this).css("border-color", "initial");
+			});
 			
 			$("input[pattern='[0-9]*']").keydown(function (e) { //start text validation
 				// Allow: backspace, delete, tab, escape, enter and .
@@ -838,6 +916,39 @@
 					e.preventDefault();
 				}
 			}); //end text validation
+			
+			function checkRequired(){ //start checkRequired text boxes
+				var result = false;
+				$("#main input:text").filter(":enabled").each(function(){
+					if($(this).val()==''){
+						$(this).css("border-color", "#CC0000");
+						result = true;
+					}
+				});
+				return result;
+			}//end checkRequired
+			
+			function checkThinningTB(){ //start checkRequired text boxes
+				var result = false;
+				$("#thinningDialog input:text").filter(":enabled").each(function(){
+					if($(this).val()==''){
+						$(this).css("border-color", "#CC0000");
+						result = true;
+					}
+				});
+				return result;
+			}//end checkRequired
+			
+			function checkSaveTB(){ //start checkRequired text boxes
+				var result = false;
+				$("#saveDialog input:text").filter(":enabled").each(function(){
+					if($(this).val()==''){
+						$(this).css("border-color", "#CC0000");
+						result = true;
+					}
+				});
+				return result;
+			}//end checkRequired
 			//END TEXT BOX HANDLERS
 			
 			$("#reset").click(function(){ //start reset button
@@ -854,6 +965,7 @@
 			$("#configDialog-Save").click(function(){ //start config button
 				settings = $("#geolocation").is(':checked');
 				localStorage.setItem("userConfigSettings", settings);
+				$("#configDialog").dialog('close');
 			}); //end config button
 			
 			$("#configDialog-Cancel").click(function(){ //start config button
@@ -880,7 +992,7 @@
 				<p id="headingDiv-p">
 					<span id="headingDiv-NCState">NC STATE</span>
 					<span id="headingDiv-University">UNIVERSITY</span>
-					<span id="headingDiv-HSM">HAFLEY & SMITH MODEL</span>
+					<span id="headingDiv-HSM">Hafley & Smith Model</span>
 				</p>
 			</div><!-- END headingDiv -->
 			<div id="icContainer" class="collapseContainers">
@@ -937,9 +1049,9 @@
 					Height/Age Curve:
 					<br>
 					<select name="heightAgeSelect" id="heightAgeSelect">
-						<option value="lower coastal plain/wet sites">lower coastal plain/wet sites</option>
-						<option value="upper coastal plain">upper coastal plain</option>
-						<option value="piedmont/upland">piedmont/upland</option>
+						<option value="lower coastal plain/wet sites">Lower Coastal Plain/Wet Sites</option>
+						<option value="upper coastal plain">Upper Coastal Plain</option>
+						<option value="piedmont/upland">Piedmont/Upland</option>
 					</select>
 				</div> <!-- END heightAgeCurve -->
 			</div><!-- END siteIndex -->
@@ -1101,16 +1213,16 @@
 				</table>
 			</div><!-- END configDialog -->
 			<div id="btContainer" class="collapseContainers">
-			<table id="formButtons">
-				<tr>
-					<td><div class="button" id="run">Run</div></td>
-					<td><div class="button" id="config">Config</div></td>
-					<td><div class="button" id="load">Load</div></td>
-					<td><div class="button" id="save">Save</div></td>
-					<td><div class="button" id="reset">Reset</div></td>
-					<td><div class="button" id="help">Help</div></td>
-				</tr>
-			</table>
+				<table id="formButtons">
+					<tr>
+						<td><div class="button" id="run">Run</div></td>
+						<td><div class="button" id="config">Config</div></td>
+						<td><div class="button" id="load">Load</div></td>
+						<td><div class="button" id="save">Save</div></td>
+						<td><div class="button" id="reset">Reset</div></td>
+						<td><div class="button" id="help">Help</div></td>
+					</tr>
+				</table>
 			</div>
 		</div><!-- END main -->
 	</form>

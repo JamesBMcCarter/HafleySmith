@@ -1,140 +1,434 @@
- |JavaScript Documentation
- |-------------------------------------------------------|
- |PAGE INITIALIZATION										|
- |The page initialization section runs 3 different			|
- |functions in order to make sure the page is properly		|
- |formatted upon opening. It include checkEnabledFF and		|
- |checkEnabledThinning and also runs a function that sets	|
- |all the form values to the default values upon opening	|
- |the page.													|
- |															|
- |FORM SIZE SNAPPING										|
- |The form size snapping section contains the initial		|
- |snapping check for when the page is loaded and a			|
- |function for when the page is resized. Both do the same	|
- |thing but are called at separate events. The regular		|
- |if else statement is called upon on the initial loading	|
- |of the page where as the function is called upon when 	|
- |the page is resized and simply contains the same if else	|
- |statement. This statement looks at the width of the		|
- |window and adjusts the size of the form to predetermined	|
- |sizes rather than having it adjust automatically and		|
- |leaving a lot of blank gray space.						|
- |															|
- |INITIAL CONDITIONS FUNCTIONS								|
- |-COLLAPSE ANIMATION-										|
- |This function uses a Jquery Effect to create a simple		|
- |sliding animation when you click on the IC collapse		|
- |container.												|
- |															|
- |-INITIAL CONDITIONS TEXTBOX-								|
- |This function is used to disable and clear unused text	|
- |from the Initial Conditions textboxes when a different	|
- |option is selected from the Drop Down box. Each option	|
- |has a value assigned to it from 0 to 3. When a change to	|
- |the drop down box occurs it checks to see the value of 	|
- |the selected option and changes the text boxes			|
- |accordingly by either adding or removing the disabled		|
- |attribute.												|
- |															|
- |-HARDWOOD COLLAPSE-										|
- |This function uses a Jquery Effect to create a simple		|
- |sliding animation when you click on the Hardwood			|
- |Collapse container.										|
- |															|
- |-HARDWOOD TEXTBOX-										|
- |This function enables or disables the textboxes in the	|
- |hardwood section in the same fashion that the Initial		|
- |Conditions Textbox function works.						|
- |															|
- |SITE INDEX FUNCTIONS										|
- |-SITE INDEX COLLAPSE-										|
- |This function uses a Jquery Effect to create a simple		|
- |sliding animation when you click on the Site Index		|
- |Collapse container.										|
- |															|
- |FUSIFORM FUNCTIONS										|
- |-FUSIFORM COLLAPSE-										|
- |This function uses a Jquery Effect to create a simple		|
- |sliding animation when you click on the Fusiform			|
- |Collapse container.										|
-															|
- |-checkEnabledFF-											|
- |This function is used to enable and disable the Fusiform	|
- |elements depending on if the enableFusiform checkbox is	|
- |checked off or not. Upon being called it checks to see	|
- |if the checkbox is checked. If it isnt then the 3			|
- |textboxes attain the disabled attribute. If the box is	|
- |checked then it removes the disabled attribute from the	|
- |3 textboxes.												|
-															|
- |-FUSIFORM CHECKBOX-										|
- |This function is a click event for the fusiform			|
- |checkbox. When the checkbox is clicked it calls upon the	|
- |checkEnabledFF function.									|
-															|
- |THINNINGS FUNCTIONS										|
- |-THINNINGS COLLAPSE-										|
- |This function uses a Jquery Effect to create a simple		|
- |sliding animation when you click on the Thinnings			|
- |Collapse container.										|
- |															|
- |-checkEnabledThinning-									|
- |Similar to the checkEnabledFF function this function		|
- |checks whether the checkbox is checked or not. In this	|
- |case when the checkbox is not checked it gives the		|
- |select element the disabled attribute and changing the	|
- |pointer events css attribute for the add and delete		|
- |buttons to none. This makes it so that clicking on the	|
- |buttons does not result in a click event. To give a		|
- |visual cue that the buttons are disabled we also give		|
- |them the css attribute of having grey background colors.	|
- |If the checkbox is enabled all these changes are			|
- |reversed and the buttons are given back their red color.	|
- |															|
- |-THINNINGS CHECKBOX-										|
- |This function is a click event for the thinnings			|
- |checkbox. When the checkbox is clicked it calls upon the	|
- |checkEnabledThinning function.							|
- |															|
- |-collectThinnings-										|
- |This functions purpose is to accumulate all the of the	|
- |thinnings in the select element and return them as a		|
- |complete string. First it makes an Array from the select	|
- |options. If the arrays length is 0 then it returns a		|
- |a blank string. If no then it runs through the array		|
- |using a for loop and adds each element of the array onto	|
- |the end of the string. When the for loop is done it		|
- |returns the completed string of thinnings.				|
- |															|
- |-THINNING DIALOG INITIALIZATION-							|
- |This function takes an element and its contents and		|
- |converts it to a Jquery dialog.							|
- |															|
- |-ADD BUTTON-												|
- |Click event that opens the thinning dialog.				|
- |															|
- |-OK BUTTON-												|
- |This click event takes the values entered into the		|
- |dialog elements and compiles them into an option to be	|
- |displayed in the select element. It then closes the		|
- |dialog and resets the values of the dialog elements.		|
- |															|
- |-CANCEL BUTTON-											|
- |Click event that closes the thinning dialog.				|
- |															|
- |-DELETE BUTTON-											|
- |This click event checks each option in the select			|
- |element that is selected and removes the option.			|
- |															|
- |OUTPUT FUNCTIONS											|
- |-OUTPUT TYPE COLLAPSE-									|
- |This function uses a Jquery Effect to create a simple		|
- |sliding animation when you click on the Output Type		|
- |Collapse container.										|
- |															|
- |TOSTRING FUNCTIONS										|
- |-checkTB-													|
- |Checks for empty textboxes.								|
- |
- |-toStringOutput-
+JavaScript Documentation
+--------------------------------------------------------|
+PAGE INITIALIZATION										|
+The page initialization section runs 3 different		|
+functions in order to make sure the page is properly	|
+formatted upon opening. It include checkEnabledFF and	|
+checkEnabledThinning and also runs a function that sets	|
+all the form values to the default values upon opening	|
+the page.												|
+														|
+FORM SIZE SNAPPING										|
+The form size snapping section contains the initial		|
+snapping check for when the page is loaded and a		|
+function for when the page is resized. Both do the same	|
+thing but are called at separate events. The regular	|
+if else statement is called upon on the initial loading	|
+of the page where as the function is called upon when 	|
+the page is resized and simply contains the same if else|
+statement. This statement looks at the width of the		|
+window and adjusts the size of the form to predetermined|
+sizes rather than having it adjust automatically and	|
+leaving a lot of blank gray space.						|
+														|
+INITIAL CONDITIONS FUNCTIONS							|
+														|
+-COLLAPSE ANIMATION-									|
+This function uses a Jquery Effect to create a simple	|
+sliding animation when you click on the IC collapse		|
+container.												|
+														|
+-INITIAL CONDITIONS TEXTBOX-							|
+This function is used to disable and clear unused text	|
+from the Initial Conditions textboxes when a different	|
+option is selected from the Drop Down box. Each option	|
+has a value assigned to it from 0 to 3. When a change to|
+the drop down box occurs it checks to see the value of 	|
+the selected option and changes the text boxes			|
+accordingly by either adding or removing the disabled	|
+attribute.												|
+														|
+-HARDWOOD COLLAPSE-										|
+This function uses a Jquery Effect to create a simple	|
+sliding animation when you click on the Hardwood		|
+Collapse container.										|
+														|
+-HARDWOOD TEXTBOX-										|
+This function enables or disables the textboxes in the	|
+hardwood section in the same fashion that the Initial	|
+Conditions Textbox function works.						|
+														|
+SITE INDEX FUNCTIONS									|
+														|
+-SITE INDEX COLLAPSE-									|
+This function uses a Jquery Effect to create a simple	|
+sliding animation when you click on the Site Index		|
+Collapse container.										|
+														|
+FUSIFORM FUNCTIONS										|
+														|
+-FUSIFORM COLLAPSE-										|
+This function uses a Jquery Effect to create a simple	|
+sliding animation when you click on the Fusiform		|
+Collapse container.										|
+														|
+-checkEnabledFF-										|
+This function is used to enable and disable the Fusiform|
+elements depending on if the enableFusiform checkbox is	|
+checked off or not. Upon being called it checks to see	|
+if the checkbox is checked. If it isnt then the 3		|
+textboxes attain the disabled attribute. If the box is	|
+checked then it removes the disabled attribute from the	|
+3 textboxes.											|
+														|
+-FUSIFORM CHECKBOX-										|
+This function is a click event for the fusiform			|
+checkbox. When the checkbox is clicked it calls upon the|
+checkEnabledFF function.								|
+														|
+THINNINGS FUNCTIONS										|
+														|
+-THINNINGS COLLAPSE-									|
+This function uses a Jquery Effect to create a simple	|
+sliding animation when you click on the Thinnings		|
+Collapse container.										|
+														|
+-checkEnabledThinning-									|
+Similar to the checkEnabledFF function this function	|
+checks whether the checkbox is checked or not. In this	|
+case when the checkbox is not checked it gives the		|
+select element the disabled attribute and changing the	|
+pointer events css attribute for the add and delete		|
+buttons to none. This makes it so that clicking on the	|
+buttons does not result in a click event. To give a		|
+visual cue that the buttons are disabled we also give	|
+them the css attribute of having grey background colors.|
+If the checkbox is enabled all these changes are		|
+reversed and the buttons are given back their red color.|
+														|
+-THINNINGS CHECKBOX-									|
+This function is a click event for the thinnings		|
+checkbox. When the checkbox is clicked it calls upon the|
+checkEnabledThinning function.							|
+														|
+-collectThinnings-										|
+This functions purpose is to accumulate all the of the	|
+thinnings in the select element and return them as a	|
+complete string. First it makes an Array from the select|
+options. If the arrays length is 0 then it returns a	|
+a blank string. If no then it runs through the array	|
+using a for loop and adds each element of the array onto|
+the end of the string. When the for loop is done it		|
+returns the completed string of thinnings.				|
+														|
+-THINNING DIALOG INITIALIZATION-						|
+This function takes an element and its contents and		|
+converts it to a Jquery dialog.							|
+														|
+-ADD BUTTON-											|
+Click event that opens the thinning dialog.				|
+														|
+-OK BUTTON-												|
+This click event takes the values entered into the		|
+dialog elements and compiles them into an option to be	|
+displayed in the select element. It then closes the		|
+dialog and resets the values of the dialog elements.	|
+														|
+-CANCEL BUTTON-											|
+Click event that closes the thinning dialog.			|
+														|
+-DELETE BUTTON-											|
+This click event checks each option in the select		|
+element that is selected and removes the option.		|
+														|
+OUTPUT FUNCTIONS										|
+														|
+-OUTPUT TYPE COLLAPSE-									|
+This function uses a Jquery Effect to create a simple	|
+sliding animation when you click on the Output Type		|
+Collapse container.										|
+														|
+TOSTRING FUNCTIONS										|
+														|
+-checkTB-												|
+Checks for empty textboxes.								|
+														|
+-toStringOutput-										|
+This functions purpose is to take the data from all the |
+form elements and compile them into one string for which|
+could then be stored and ran. It works on a very simple	|
+mechanism by taking the current value of each form		|
+element and adding it into the string separated by "^"s |
+which are used later to separate the individual values	|
+in the string and put into an array. The last thing the |
+string collects are the thinnings which come last for a |
+couple reasons.	Because the thinnings have a variable 	|
+number of entries it is easier to collect them all at 	|
+the end rather than	dealing with them in the middle of 	|
+the string. Also this allows us to know their exact 	|
+positioning because if the number of data entries in the|
+output string is more than 20 then that means thinnings |
+were added and we can just cycle through until there is	| 
+no more data entries.									|
+														|
+RUN FUNCTIONS											|
+														|
+-createArray-											|
+Creates a multidimensional array based on parameters for|
+length and width. Width determines the size of the inner|
+arrays while length determines the amount of arrays thus|
+creating multidimensional arrays that can be used for	|
+displaying the run results.								|
+														|
+-outputThinningsArray-									|
+The outputThinningsArray function creates a 2D array for|
+thinnings specifically.The 2D array splits up the values|
+contained in the thinnings entries and allows for each 	|
+to be accessed individually.							|
+														|
+-checkOutputThinnings-									|
+Takes in 3 parameters which include a thinningsArray	|
+from the outputThinningsArray function, an outputArray	|
+from the createTableRows function, and an Age. Using the|
+3 parameters the function checks if there is a thinning	|
+that belongs at or between the passed in Age parameter	|
+and the age after that. If there is no thinning listed	|
+then it simply puts the information from the output		|
+the output array directly into the default arrayString	|
+and returns it.											|
+														|
+-createTableRows-										|
+Uses the createArray, outputThinningsArray, and			|
+outputThinningsArray functions to convert the parameter	|
+outputString into an HTML string which is used to		|
+display the table on the results page. It takes the		|
+outputString and splits it up into an array of its		|
+individual values. From there it pulls the Start, End,	|
+and Interval and calculates the arrayHeight and the		|
+arrayStart. It uses the arrayHeight value to create a 2D|
+array thats arrayHeight tall and 11 wide. This matrix	|
+represents that of the table shown on the results page.	|
+Each of the 11 boxes represents a column in the results |
+page while the height represents the number of intervals|
+calculated. The remainderVar calculations are used to 	|
+tell whether the number of years between the Start and	|
+End date are divisible by the Interval. if it isnt then	|
+the remainderVar adds 1 extra to the height of the array|
+so that it can account for the Ending year. It then		|
+loops through the output array and calculates the age	|
+that should go in the first column of the matrix and set|
+(for now at least)the rest of the columns to 0. After it|
+finishes with the outputArray it creates a blank string	|
+which will hold the final HTML that will be inserted in	|
+to the results page. Before it can do this it must check|
+each listed age for a thinning. it passes the the age	|
+which is not actually the age but the index number for	|
+the age slot(e.g. passing in 3 would mean the slot of	|
+outputArray[3][0] which could hold the age value of 20).|
+After it has checked all the thinnings with the			|
+checkOutputThinnings function it then returns the final	|
+arrayString.											|
+
+-RUN BUTTON-											|
+First this function runs the function checkRequired to	|
+check if all required textboxes are filled out. If they	|
+are then it runs toStringOutput which returns us our	|
+outputString. This outputString is then split up into an|
+array of its individual values. It then passes the		|
+outputString into the createTableRows function which	|
+returns its arrayString that is then set to matrixArray.|
+It then creates a popup window and writes the HTML into |
+the window. In this HTML it includes the matrixArray	|
+which displays the results table. If the checkRequired	|
+function returned true then it bypasses all of that and	|
+instead displays an alert message informing the user to	|
+fill out the marked textboxes.							|
+														|
+SAVE FUNCTIONS											|
+														|
+-SAVE DIALOG INITIALIZATION-							|
+This function takes an element and its contents and		|
+converts it to a Jquery dialog.							|
+														|
+-SAVEDIALOG-CANCEL BUTTON-								|
+This button closes the save dialog and sets the textbox	|
+to a blank value.										|
+														|
+-SAVEDIALOG-SAVE BUTTON-								|
+Checks to see if the textbox is filled out. If not it	|
+displays an error and marks the box with a red border.	|
+If it is it then checks if there is already a save under|
+the same name. If there is then it sends the function	|
+over to the owError function which will handle the		|
+overwrite save functions. If there is no other save		|
+under the given name then it creates a localStorage item|
+with the given savename and then checks to see if its	|
+first saved item or if there are other saved items. This|
+is done because it also needs to save the given name in	|
+a seperate localStorage item specifically made to hold	|
+the save names. This allows the functions to better		|
+distinguish what localStorage items are saves and other	|
+possible entries such as location or settings.	After it|
+saves both items it then clears the textbox and closes	|
+the dialog.												|
+														|
+OVERWRITE FUNCTIONS										|
+														|
+-OVERWRITE DIALOG INITIALIZATION-						|
+This function takes an element and its contents and		|
+converts it to a Jquery dialog.							|
+														|
+-owError-												|
+Takes in the given name for the save and opens up the	|
+overwrite dialog. Then it sets the saveVariable to the	|
+text of the name.										|
+														|
+-OWDIALOG-YES BUTTON-									|
+Overwrites the saved data for the item with the given	|
+name with the new data from toStringOutput then closes	|
+the saveDialog and owDialog.							|
+														|
+-OWDIALOG-NO BUTTON-									|
+Closes the overwrite dialog on click.					|
+														|
+-SAVE BUTTON-											|
+Click event that opens the Save Dialog.					|
+														|
+LOAD FUNCTIONS											|
+														|
+-LOAD DIALOG INITIALIZATION-							|
+This function takes an element and its contents and		|
+converts it to a Jquery dialog.							|
+														|
+-LOADDIALOG-CANCEL BUTTON-								|
+If this button is displayed as cancel it runs the		|
+resetLoadSelect function and closes the dialog. If it is|
+displayed as Clear All then it opens the clearDialog.	|
+														|
+-LOADDIALOG-LOAD BUTTON-								|
+If this button is displayed as Load then run the reset	|
+function to reset the form to default and then get the	|
+selected save item from localStorage and split its data	|
+into an array. Run through the elements in the form one	|
+by one setting their value to that of the corresponding	|
+save data values in the array. Then run the				|
+loadThinnings function to load all the saved thinnings.	|
+Run checkEnabledFF and checkenabledThinning to properly	|
+handle disabling and enabling form elements for those	|
+sections. Run the resetLoadSelect function to reset the	|
+load dialog back to default and run the selectChecks	|
+function to properly handle the enabling and disabling	|
+of textboxes by select boxes. Finally it closes the load|
+dialog.	If this button is displayed as Delete then it	|
+takes the selected save and deletes its localStorage	|
+localStorage item and its name from the saves item.		|
+														|
+-LOADDIALOG-MANAGE BUTTON-								|
+The click event of this button allows the user to switch|
+between managing their saves and loading their saves. By|
+clicking manage it changes the dialogs title to Manage	|
+Save, the Load button to Delete, the Cancel button to	|
+Clear All, and the Manage button to Done and vice versa |
+when the Manage button is displayed as Done.			|
+														|
+-CLEAR DIALOG INITIALIZATION-							|
+This function takes an element and its contents and		|
+converts it to a Jquery dialog.							|
+														|
+-CLEARDIALOG-YES BUTTON-								|
+Creates an array of all the save names from the saves	|
+item in localStorage and then loops through each of them|
+and removing the save items with those names from the	|
+localStorage. It then removes the saves item and runs	|
+the resetLoadSelect function and closes the dialog.		|
+														|
+-CLEARDIALOG-NO BUTTON-									|
+Closes the clear dialog.								|
+														|
+-loadThinnings-											|
+This function looks to see if there are thinnings inside|
+the save data that is passed in. Because all thinnings	|
+are saved at the end of the save data all you need to do|
+is check if there are more values at the end of the data|
+to tell if exist. If there are thinnings then it loops	|
+through them adding them as options into the load dialog|
+to be displayed in the select box.						|
+														|
+-resetLoadSelect-										|
+Sets the select box back to its original state.			|
+														|
+-LOAD BUTTON-											|
+Checks to see if there are any stored saves in the		|
+localStorage. If there are it takes the saves item and	|
+splits all the names and puts them into an array. Then	|
+it loops through the array and adds each save name as an|
+option in the select box. Finally it then opens the load|
+dialog.													|
+														|
+LOCAL STORAGE HANDLERS									|
+														|
+-getSave-												|
+returns the data of the localStorage item with with the	|
+passed in name.											|
+														|
+-checkSave-												|
+Returns true if there is no saves item in localStorage.	|
+														|
+-checkSaveName-											|
+If there are saves in localStorage it checks the saves	|
+item by splitting its data into an array and looping	|
+through each name and checking if its equal to the name	|
+that was passed in.										|
+														|
+RESET FUNCTIONS											|
+														|
+-reset-													|
+Goes through each form element and sets it back to its	|
+default value.											|
+														|
+TEXT BOX HANDLERS										|
+														|
+-SELECT CHANGE EVENT-									|
+This change event occurs on select elements. It sets it |
+so that textboxes that are disabled whenever a select	|
+element changes are set to a blank value and their 		|
+border is set back to its initial state.				|
+														|
+-INPUT:TEXT CLICK EVENT-								|
+Clicking on a textbox sets its border back to its		|
+initial state.											|
+														|
+-TEXT VALIDATION-										|
+This keydown event checks upon each key press if the	|
+entered keycode is a number, backspace, tab, escape,	|
+enter, period or one of the ctrl + (a, c, or x) codes	|
+along with the home, end, and left or right buttons.	|
+If its not one of these then it prevents the value from	|
+being input.											|
+														|
+-checkRequired-											|
+Checks all textboxes that are enabled to see if any are	|
+blank. If they are then it sets their borders to a red	|
+color and returns a value of true.						|
+														|
+-checkThinningTB-										|
+Checks the thinnings dialog textboxes to see if they	|
+are blank. If they are then it sets their border to red |
+color and returns a value of true.						|
+														|
+-checkSaveTB-											|
+Checks the save dialog textbox to see if it is	blank.	|
+If it is then it sets its border to red color and		|
+returns a value of true.								|
+														|
+FORM BUTTONS											|
+														|
+-RESET BUTTON-											|
+Runs the reset function.								|
+														|
+-HELP BUTTON-											|
+Nothing right now.										|
+														|
+-CONFIG BUTTON-											|
+Opens the config dialog.								|
+														|
+-CONFIGDIALOG-SAVE BUTTON-								|
+Saves the settings in the config dialog to localStorage |
+called userConfigSettings.								|
+														|
+-CONFIGDIALOG-CANCEL BUTTON-							|
+Closes the config dialog.								|
+														|
+-CONFIG DIALOG INITIALIZATION-							|
+This function takes an element and its contents and		|
+converts it to a Jquery dialog.							|
