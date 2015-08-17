@@ -30,20 +30,23 @@ input:disabled {
 
 #ffTable{font-size:.9em;}
 
+#thinningDialog{min-height:0px !important;}
+#dialogTable1 td{padding:5px;font-size:.6em;}
 #thinningContainer{width:100%;}
 #thinningContainer-select{width:75%;}
 #selectList{cursor:pointer;width:250px;-webkit-appearance:listbox;}
 #thinningContainer-buttons{text-align:center;}
-#dialogTable1 td{padding:5px;font-size:.6em;}
+
+#btContainer{position:relative;top:6px;}
+#formButtons{width:40%;text-align:center;}
 #loadDialog-Select{cursor:pointer;width:294px;-webkit-appearance:listbox;}
 #saveDialog{min-height:0px !important;}
 #owDialog{min-height:0px !important;}
 #clearDialog{min-height:0px !important;}
+#configDialog{min-height:0px !important;}
 #loadDialog{min-height:0px !important;}
 #loadDialog-Manage{display:inline;position:absolute;right:3px;bottom:3px;}
 
-
-#formButtons{width:40%;text-align:center;}
 
 .collapseContainers{
 	min-width:320px;
