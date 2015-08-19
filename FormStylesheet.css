@@ -46,6 +46,10 @@ input:disabled {
 #configDialog{min-height:0px !important;}
 #loadDialog{min-height:0px !important;}
 #loadDialog-Manage{display:inline;position:absolute;right:3px;bottom:3px;}
+#importDialog{min-height:0px !important;}
+#importFile{margin:5px;}
+#loadDialog-Export{text-decoration:none;}
+#owImportDialog{min-height:0px !important;}
 
 
 .collapseContainers{

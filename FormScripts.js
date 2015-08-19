@@ -133,7 +133,7 @@ $(document).ready(function(){
 			$("#totalBATB").removeAttr("disabled");
 			$("#atAgeTB").removeAttr("disabled");
 		}else{
-			alert("error");
+			alert("Something went wrong. :(");
 		}
 	}
 
@@ -588,11 +588,15 @@ $(document).ready(function(){
 			$("#loadDialog-Manage").html("Done");
 			$("#loadDialog-Load").html("Delete");
 			$("#loadDialog-Cancel").html("Clear All");
+			$("#loadDialog-Import").hide();
+			$("#loadDialog-Export").hide();
 		}else{
 			$('#loadDialog').dialog('option', 'title', 'Load');
 			$("#loadDialog-Manage").html("Manage");
 			$("#loadDialog-Load").html("Load");
 			$("#loadDialog-Cancel").html("Cancel");
+			$("#loadDialog-Import").show();
+			$("#loadDialog-Export").show()
 		}
 	}); //end manage mode toggle
 	
@@ -651,7 +655,7 @@ $(document).ready(function(){
 		return localStorage.getItem(cname);
 	} //end getting local save information
 	function checkSave() { //start check for local save
-		if (localStorage.getItem('saves') == null) {
+		if (localStorage.getItem('saves') == null || localStorage.getItem('saves') == "") {
 			return true;
 		}else{
 			return false;
@@ -659,7 +663,7 @@ $(document).ready(function(){
 	} //end check for local save
 	
 	function checkSaveName(name){ //start check save
-		if(localStorage.getItem('saves') != null){
+		if(localStorage.getItem('saves') != null && localStorage.getItem('saves') != ""){
 			var strg = localStorage.getItem('saves').split(',');
 			for(i=0;i<strg.length;i++){
 				if(strg[i] == name){
@@ -777,6 +781,19 @@ $(document).ready(function(){
 		});
 		return result;
 	}//end checkRequired
+	
+	function checkImport(){ //start checkRequired text boxes
+		var result = 0;
+		if($("#importName").val()==''){
+			$("#importName").css("border-color", "#CC0000");
+			result = 1;
+		}else if($("#importFile").val() == ''){
+			result = -1;
+		}else if($("#importFile").val() == '' && $("#importName").val()==''){
+			result = 2;
+		}
+		return result;
+	}//end checkRequired
 	//END TEXT BOX HANDLERS
 	
 	$("#reset").click(function(){ //start reset button
@@ -812,4 +829,127 @@ $(document).ready(function(){
 				autoOpen:false,
 		}); //end of Dialog initialization
 	});
+	
+	//START IMPORT/EXPORT
+	document.getElementById('importFile').addEventListener('change', readSingleFile, false);
+	fileData = "";
+	$("#importDialog").dialog({ //Dialog initialization
+				modal:true,
+				draggable:false,
+				resizeable:false,
+				position:{ my: "center center", at: "center center", of: "#main" },
+				show: 'blind',
+				hide: 'blind',
+				width: 300,
+				autoOpen:false,
+	}); //end of Dialog initialization
+		
+	if (window.File && window.FileReader && window.FileList && window.Blob) {
+		$("#loadDialog-Import").show();
+	} else {
+		$("#loadDialog-Import").hide();
+	}
+	
+	$("#loadDialog-Import").click(function(){
+		$("#importDialog").dialog('open');
+	});
+	
+	$("#importDialog-Ok").click(function(evt){
+		var importData = fileData;
+		if(checkImport() == 0){
+			if(checkSaveName($("#importName").val())==true){
+				owImportError($("#importName").val());
+			}else{
+				localStorage.setItem($("#importName").val(), importData);
+				if(checkSave() == true){
+					localStorage.setItem('saves', $('#importName').val());
+				}else{
+					localStorage.setItem('saves', localStorage.getItem('saves') + "," + $("#importName").val());
+				}
+				$("#importName").val("");
+				$("#importDialog").dialog("close");
+			}
+		}else if(checkImport() == 1){
+			alert("Please fill out the box with the marked border.");
+		}else if(checkImport() == -1){
+			alert("No file selected!");
+		}else if(checkImport() == 2){
+			alert("Please choose a file and enter a save name.");
+		}
+		resetLoadSelect();
+		if(localStorage.getItem('saves') != null){
+			saveArray = localStorage.getItem('saves').split(',');
+			for(i=0;i<saveArray.length;i++){
+				$('#loadDialog-Select').append("<option value='"+i+"'>"+saveArray[i]+"</option>");
+			}
+		}
+		fileData = "";
+	});
+	
+	$("#importDialog-Cancel").click(function(){
+		$("#importFile").val("");
+		$("#importName").val("");
+		$("#importDialog").dialog("close")
+	})
+	
+	
+	//START overwrite import function
+	$("#owImportDialog").dialog({ //Dialog initialization
+			modal:true,
+			draggable:false,
+			resizeable:false,
+			position:{ my: "center center", at: "center center", of: "#main" },
+			show: 'blind',
+			hide: 'blind',
+			width: 300,
+			autoOpen:false,
+	}); //end of Dialog initialization
+	
+	function owImportError(name) { //start overwrite error dialog handler
+		$("#owImportDialog").dialog('open');
+		$("#importVariable").text(name);
+	} //end overwrite error dialog handler
+	
+	$("#owImportDialog-Yes").click(function(){ //start overwrite yes/no buttons
+		localStorage.setItem($("#importName").val(), fileData);
+		$("#importDialog").dialog("close");
+		$("#owImportDialog").dialog("close");
+	});
+	
+	$("#owImportDialog-No").click(function(){
+		$("#owImportDialog").dialog("close");
+	}); //end overwrite yes/no buttons
+	//END overwrite function
+	
+	function readSingleFile(evt) {
+		//Retrieve the first (and only!) File from the FileList object
+		var f = evt.target.files[0]; 
+		alert(f.name.substring(f.name.length - 8, f.name.length));
+		if (!f) {
+			alert("Failed to load file");
+		} else if (f.name.substring(f.name.length - 8, f.name.length) != ".hsmsave") {
+				alert(f.name + " is not a valid save file.");
+				$("#importFile").val("");
+		} else {
+			var r = new FileReader();
+			r.onload = function(e) { 
+				var contents = e.target.result;
+				fileData = contents; 
+			}
+			r.readAsText(f);
+		}
+	}
+	 
+	$("#loadDialog-Export").click(function(){
+		if($("#loadDialog-Select option").is(":selected") == true){
+			data = getSave($("#loadDialog-Select option:selected").text());
+			//var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+			//saveAs(blob, $("#loadDialog-Select option:selected").text() + ".hsmsave");
+			$("#loadDialog-Export").attr("href", "data:application/csv;charset=utf-8," + encodeURIComponent(data));
+			$("#loadDialog-Export").attr ("download", $("#loadDialog-Select option:selected").text() + ".hsmsave");
+		}else{
+			alert("No file selected for export!");
+		}
+	})
+	//END IMPORT/EXPORT
 });

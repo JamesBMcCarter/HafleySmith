@@ -21,7 +21,7 @@ the version number inside the ncsuHS.txt file for cached systems to update.**-->
 					<p id="headingDiv-p">
 						<span id="headingDiv-NCState">NC STATE</span>
 						<span id="headingDiv-University">UNIVERSITY</span>
-						<span id="headingDiv-HSM">Hafley & Smith Model</span>
+						<span id="headingDiv-HSM">Hafley & Smith Model v1.0.8</span>
 					</p>
 				</div><!-- END headingDiv -->
 				<div id="icContainer" class="collapseContainers">
@@ -210,10 +210,30 @@ the version number inside the ncsuHS.txt file for cached systems to update.**-->
 					<tr>
 						<td><div class="button" id="loadDialog-Load">Load</div></td>
 						<td><div class="button" id="loadDialog-Cancel">Cancel</div></td>
+						<td><div class="button" id="loadDialog-Import">Import</div></td>
+						<td><a id='loadDialog-Export'><div class="button">Export</div></a></td>
 						<td><div class="button" id="loadDialog-Manage">Manage</div></td>
 					</tr>
 				</table>
 				</div><!-- END loadDialog -->
+				<div id="importDialog" title="Choose Save File to Import"><!-- START importDialog -->
+					<span class="dialogText">Choose save file: </span><input id="importFile" type="file" accept=".hsmsave"><br><span class="dialogText">Save As: </span><input type="text" id="importName">
+					<table>
+						<tr>
+							<td><div class="button" id="importDialog-Ok">Ok</div></td>
+							<td><div class="button" id="importDialog-Cancel">Cancel</div></td>
+						</tr>
+					</table>
+				</div><!-- END importDialog -->
+				<div id="owImportDialog" title="Overwrite?"><!-- START owImportDialog -->
+					<span class="dialogText"><span class="dialog" id="importVariable">Save</span> already exists. Do you wish to overwrite it?</span>
+					<table>
+						<tr>
+							<td><div class="button" id="owImportDialog-Yes">Yes</div></td>
+							<td><div class="button" id="owImportDialog-No">No</div></td>
+						</tr>
+					</table>
+				</div><!-- END owImportDialog -->
 				<div id="owDialog" title="Overwrite?"><!-- START owDialog -->
 					<span class="dialogText"><span class="dialog" id="saveVariable">Save</span> already exists. Do you wish to overwrite it?</span>
 					<table>
